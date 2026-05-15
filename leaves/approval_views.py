@@ -11,6 +11,11 @@ from .serializers import LeaveRequestSerializer
 from .utils import get_working_days, get_next_working_day
 from accounts.permissions import IsSupervisor, IsHROfficer, IsHeadHR
 from notifications.utils import create_notification
+from notifications.tasks import (
+    notify_employee_status_change,
+    notify_hr_of_supervisor_approval,
+    notify_head_hr_for_final_approval
+)
 
 
 def log_audit(actor, action, leave_request, extra=None):
@@ -45,14 +50,13 @@ class SupervisorReviewView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Supervisor must be HOD of the employee's department
         if leave_request.employee.department != request.user.department:
             return Response(
                 {'detail': 'You are not the supervisor for this employee.'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        action = request.data.get('action')  # 'APPROVE' or 'REJECT'
+        action = request.data.get('action')
         recommended_days = request.data.get('recommended_days')
         remarks = request.data.get('remarks', '')
 
@@ -82,13 +86,16 @@ class SupervisorReviewView(APIView):
                     remarks=rejection_reason
                 )
 
-                # Notify employee
                 create_notification(
                     user=leave_request.employee,
                     message=(
-                        f'Your {leave_request.leave_type.name} request has been '
+                        f'Your {leave_request.leave_type.name} request was '
                         f'rejected by your supervisor. Reason: {rejection_reason}'
                     )
+                )
+                notify_employee_status_change.delay(
+                    leave_request.id, 'REJECTED',
+                    f'Reason: {rejection_reason}'
                 )
 
             else:  # APPROVE
@@ -115,29 +122,15 @@ class SupervisorReviewView(APIView):
                     remarks=remarks
                 )
 
-                # Notify employee
                 create_notification(
                     user=leave_request.employee,
                     message=(
-                        f'Your {leave_request.leave_type.name} request has been '
+                        f'Your {leave_request.leave_type.name} request was '
                         f'approved by your supervisor and forwarded to HR.'
                     )
                 )
-
-                # Notify HR officers
-                from accounts.models import Employee
-                hr_officers = Employee.objects.filter(
-                    role__in=['HR_OFFICER', 'HEAD_HR']
-                )
-                for hr in hr_officers:
-                    create_notification(
-                        user=hr,
-                        message=(
-                            f'{leave_request.employee.name} — '
-                            f'{leave_request.leave_type.name} request '
-                            f'forwarded for HR review.'
-                        )
-                    )
+                notify_employee_status_change.delay(leave_request.id, 'HR_REVIEW')
+                notify_hr_of_supervisor_approval.delay(leave_request.id)
 
             log_audit(request.user, f'SUPERVISOR_{action}', leave_request, {'remarks': remarks})
 
@@ -163,7 +156,6 @@ class HRReviewView(APIView):
         leave_type = leave_request.leave_type
         current_year = leave_request.from_date.year
 
-        # Get or create balance
         balance, _ = LeaveBalance.objects.get_or_create(
             employee=employee,
             leave_type=leave_type,
@@ -171,16 +163,8 @@ class HRReviewView(APIView):
             defaults={'total_entitlement': leave_type.max_days}
         )
 
-        # Auto-calculate Part III fields
-        recommended_days = (
-            leave_request.supervisor_recommended_days or
-            leave_request.days_requested
-        )
-        total_days_due = balance.total_entitlement + balance.accumulated_with_permission
-        balance_remaining = total_days_due - balance.taken
         resume_date = get_next_working_day(leave_request.to_date)
 
-        # Allow HR overrides
         override_entitlement = request.data.get('leave_entitlement')
         override_accumulated = request.data.get('accumulated_with_permission')
         override_resume = request.data.get('resume_date')
@@ -217,7 +201,6 @@ class HRReviewView(APIView):
                 remarks=request.data.get('remarks', '')
             )
 
-            # Log if HR overrode any value
             overrides = {}
             if override_entitlement:
                 overrides['leave_entitlement_overridden'] = override_entitlement
@@ -233,10 +216,11 @@ class HRReviewView(APIView):
             create_notification(
                 user=leave_request.employee,
                 message=(
-                    f'Your {leave_request.leave_type.name} request is being '
-                    f'processed by HR.'
+                    f'Your {leave_request.leave_type.name} request '
+                    f'is being processed by HR.'
                 )
             )
+            notify_employee_status_change.delay(leave_request.id, 'HR_CHECK')
 
         return Response(LeaveRequestSerializer(leave_request).data)
 
@@ -262,11 +246,8 @@ class HRAllowanceView(APIView):
             leave_request.days_requested
         )
 
-        # Daily rate = monthly salary_band / 30
         daily_rate = employee.salary_band / 30
         calculated_allowance = daily_rate * approved_days
-
-        # Allow HR override
         override_allowance = request.data.get('leave_allowance_ksh')
 
         with transaction.atomic():
@@ -287,7 +268,10 @@ class HRAllowanceView(APIView):
             if override_allowance:
                 log_audit(
                     request.user, 'HR_OVERRIDE_ALLOWANCE', leave_request,
-                    {'calculated': str(calculated_allowance), 'overridden_to': override_allowance}
+                    {
+                        'calculated': str(calculated_allowance),
+                        'overridden_to': override_allowance
+                    }
                 )
 
         return Response(LeaveRequestSerializer(leave_request).data)
@@ -308,7 +292,6 @@ class HROfficerVerifyView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Ensure Part IV allowance has been set
         if leave_request.leave_allowance_ksh is None:
             return Response(
                 {'detail': 'Please complete Part IV (allowance) before verifying.'},
@@ -324,10 +307,8 @@ class HROfficerVerifyView(APIView):
                 remarks=request.data.get('remarks', 'All parts verified by HR Officer.')
             )
 
-            # Keep status at HR_CHECK — Head HR does final approval
             log_audit(request.user, 'HR_OFFICER_VERIFIED', leave_request)
 
-            # Notify Head HR
             from accounts.models import Employee
             head_hr_list = Employee.objects.filter(role='HEAD_HR')
             for head in head_hr_list:
@@ -335,10 +316,12 @@ class HROfficerVerifyView(APIView):
                     user=head,
                     message=(
                         f'{leave_request.employee.name} — '
-                        f'{leave_request.leave_type.name} request '
-                        f'verified by HR Officer. Awaiting your final approval.'
+                        f'{leave_request.leave_type.name} request verified. '
+                        f'Awaiting your final approval.'
                     )
                 )
+
+            notify_head_hr_for_final_approval.delay(leave_request.id)
 
         return Response(LeaveRequestSerializer(leave_request).data)
 
@@ -358,7 +341,6 @@ class HeadHRFinalApprovalView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Check Part V has been done
         part_v = leave_request.approvals.filter(part='V').exists()
         if not part_v:
             return Response(
@@ -366,7 +348,7 @@ class HeadHRFinalApprovalView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        action = request.data.get('action')  # 'APPROVE' or 'REJECT'
+        action = request.data.get('action')
         if action not in ['APPROVE', 'REJECT']:
             return Response(
                 {'detail': 'Action must be APPROVE or REJECT.'},
@@ -396,16 +378,19 @@ class HeadHRFinalApprovalView(APIView):
                 create_notification(
                     user=leave_request.employee,
                     message=(
-                        f'Your {leave_request.leave_type.name} request has been '
+                        f'Your {leave_request.leave_type.name} request was '
                         f'rejected by the Head of HR. Reason: {rejection_reason}'
                     )
+                )
+                notify_employee_status_change.delay(
+                    leave_request.id, 'REJECTED',
+                    f'Reason: {rejection_reason}'
                 )
 
             else:  # FINAL APPROVE
                 leave_request.status = 'APPROVED'
                 leave_request.save()
 
-                # Deduct from leave balance
                 balance = LeaveBalance.objects.filter(
                     employee=leave_request.employee,
                     leave_type=leave_request.leave_type,
@@ -431,20 +416,18 @@ class HeadHRFinalApprovalView(APIView):
                 create_notification(
                     user=leave_request.employee,
                     message=(
-                        f'Congratulations! Your {leave_request.leave_type.name} '
-                        f'request for {leave_request.days_requested} days has been '
-                        f'fully approved. Your leave runs from '
-                        f'{leave_request.from_date} to {leave_request.to_date}. '
+                        f'Your {leave_request.leave_type.name} request for '
+                        f'{leave_request.days_requested} days has been fully approved. '
                         f'Resume date: {leave_request.resume_date}.'
                     )
                 )
+                notify_employee_status_change.delay(leave_request.id, 'APPROVED')
 
-                # Trigger PDF generation (Phase 7)
                 try:
                     from .tasks import generate_leave_pdf_task
                     generate_leave_pdf_task.delay(leave_request.id)
                 except Exception:
-                    pass  # PDF generation added in Phase 7
+                    pass
 
             log_audit(request.user, f'HEAD_HR_{action}', leave_request)
 
@@ -452,10 +435,9 @@ class HeadHRFinalApprovalView(APIView):
 
 
 # ─────────────────────────────────────────────
-# Approval Status Overview
+# Pending Queues
 # ─────────────────────────────────────────────
 class PendingSupervisorView(APIView):
-    """Pending requests for the logged-in supervisor."""
     permission_classes = [IsSupervisor]
 
     def get(self, request):
@@ -463,38 +445,27 @@ class PendingSupervisorView(APIView):
             status='SUPERVISOR_REVIEW',
             employee__department=request.user.department
         ).select_related('employee', 'leave_type').order_by('from_date')
-
         return Response(LeaveRequestSerializer(requests, many=True).data)
 
 
 class PendingHRView(APIView):
-    """Requests pending HR action."""
     permission_classes = [IsHROfficer]
 
     def get(self, request):
         requests = LeaveRequest.objects.filter(
             status__in=['HR_REVIEW', 'HR_CHECK']
         ).select_related('employee', 'leave_type').order_by('from_date')
-
         return Response(LeaveRequestSerializer(requests, many=True).data)
 
 
 class PendingHeadHRView(APIView):
-    """Requests pending Head HR final approval."""
     permission_classes = [IsHeadHR]
 
     def get(self, request):
-        # Only show ones where Part V is done
-        from django.db.models import Subquery, OuterRef
-        part_v_done = ApprovalChain.objects.filter(
-            leave_request=OuterRef('pk'), part='V'
-        )
         requests = LeaveRequest.objects.filter(
-            status='HR_CHECK'
-        ).filter(
+            status='HR_CHECK',
             approvals__part='V'
         ).distinct().select_related(
             'employee', 'leave_type'
         ).order_by('from_date')
-
         return Response(LeaveRequestSerializer(requests, many=True).data)

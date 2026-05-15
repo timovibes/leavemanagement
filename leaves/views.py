@@ -74,7 +74,6 @@ class ApplyLeaveView(APIView):
 
 
 class SubmitLeaveView(APIView):
-    """Change status from DRAFT to SUBMITTED."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
@@ -88,30 +87,47 @@ class SubmitLeaveView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        leave_request.status = 'SUBMITTED'
-        leave_request.save()
+        supervisor = (
+            leave_request.employee.department.head
+            if leave_request.employee.department else None
+        )
 
-        # Notify supervisor
-        supervisor = leave_request.employee.department.head if leave_request.employee.department else None
+        with transaction.atomic():
+            if supervisor:
+                leave_request.status = 'SUPERVISOR_REVIEW'
+            else:
+                leave_request.status = 'SUBMITTED'
+            leave_request.save()
+
+            AuditLog.objects.create(
+                actor=request.user,
+                action='LEAVE_SUBMITTED',
+                target_table='leave_requests',
+                target_id=leave_request.id,
+                details={'status': leave_request.status}
+            )
+
+        # Queue email tasks (non-blocking)
+        from notifications.tasks import (
+            notify_supervisor_of_submission,
+            notify_employee_status_change
+        )
+        notify_supervisor_of_submission.delay(leave_request.id)
+        notify_employee_status_change.delay(
+            leave_request.id,
+            leave_request.status
+        )
+
+        # In-app notifications
+        from notifications.utils import create_notification
         if supervisor:
             create_notification(
                 user=supervisor,
                 message=(
-                    f'{leave_request.employee.name} has submitted a '
-                    f'{leave_request.leave_type.name} request for '
-                    f'{leave_request.days_requested} days. Please review.'
+                    f'{leave_request.employee.name} submitted a '
+                    f'{leave_request.leave_type.name} request. Please review.'
                 )
             )
-            leave_request.status = 'SUPERVISOR_REVIEW'
-            leave_request.save()
-
-        AuditLog.objects.create(
-            actor=request.user,
-            action='LEAVE_SUBMITTED',
-            target_table='leave_requests',
-            target_id=leave_request.id,
-            details={'status': leave_request.status}
-        )
 
         return Response(LeaveRequestSerializer(leave_request).data)
 
