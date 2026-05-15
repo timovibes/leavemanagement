@@ -12,6 +12,14 @@ from .approval_views import (
     PendingSupervisorView, PendingHRView, PendingHeadHRView
 )
 
+from .views import (
+    LeaveTypeListView, PublicHolidayListView,
+    MyLeaveBalanceView, ApplyLeaveView, SubmitLeaveView,
+    MyLeaveRequestsView, LeaveRequestDetailView,
+    AllLeaveRequestsView, TeamLeaveRequestsView,
+    WorkingDaysCalculatorView, DownloadLeavePDFView
+)
+
 urlpatterns = [
     # Leave types & holidays
     path('types/', LeaveTypeListView.as_view(), name='leave_types'),
@@ -42,4 +50,6 @@ urlpatterns = [
     path('<int:pk>/hr-allowance/', HRAllowanceView.as_view(), name='hr_allowance'),
     path('<int:pk>/hr-verify/', HROfficerVerifyView.as_view(), name='hr_verify'),
     path('<int:pk>/final-approval/', HeadHRFinalApprovalView.as_view(), name='final_approval'),
+
+    path('<int:pk>/download-pdf/', DownloadLeavePDFView.as_view(), name='download_pdf'),
 ]

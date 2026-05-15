@@ -15,6 +15,10 @@ from .utils import get_working_days
 from accounts.permissions import IsHROfficer, IsSupervisor
 from notifications.utils import create_notification
 
+from django.http import FileResponse
+from django.core.files.storage import default_storage
+import os
+
 
 class LeaveTypeListView(generics.ListAPIView):
     serializer_class = LeaveTypeSerializer
@@ -240,3 +244,36 @@ class WorkingDaysCalculatorView(APIView):
 
         days = get_working_days(from_date, to_date)
         return Response({'working_days': days})
+    
+class DownloadLeavePDFView(APIView):
+permission_classes = [permissions.IsAuthenticated]
+
+def get(self, request, pk):
+    leave_request = get_object_or_404(LeaveRequest, pk=pk)
+
+    # Only the employee, HR, or Head HR can download
+    user = request.user
+    if (user != leave_request.employee and
+            user.role not in ['HR_OFFICER', 'HEAD_HR', 'ADMIN']):
+        return Response(
+            {'detail': 'Permission denied.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    if leave_request.status != 'APPROVED':
+        return Response(
+            {'detail': 'PDF is only available for approved requests.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Generate on the fly if not saved yet
+    from .pdf_generator import generate_leave_pdf
+    pdf_buffer = generate_leave_pdf(leave_request)
+
+    filename = f'KFS_Leave_LV{leave_request.id:05d}.pdf'
+    response = FileResponse(
+        pdf_buffer,
+        content_type='application/pdf'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
