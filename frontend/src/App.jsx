@@ -18,6 +18,14 @@ import LeaveDetail from './pages/employee/LeaveDetail'
 import Profile from './pages/employee/Profile'
 import Notifications from './pages/employee/Notifications'
 
+
+import SupervisorDashboard from './pages/supervisor/SupervisorDashboard'
+import PendingApprovals from './pages/supervisor/PendingApprovals'
+import TeamCalendar from './pages/supervisor/TeamCalendar'
+
+import { useNavigate } from 'react-router-dom'
+import useAuthStore from './store/authStore'
+
 // Placeholders for future phases
 const Placeholder = ({ title }) => (
   <div className="page-container">
@@ -66,13 +74,21 @@ export default function App() {
             </Route>
           </Route>
 
+          const DashboardRedirect = () => {
+  const { user } = useAuthStore()
+  if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
+  if (user?.role === 'HR_OFFICER') return <Placeholder title="HR Dashboard" />
+  if (user?.role === 'HEAD_HR')    return <Placeholder title="Head HR Dashboard" />
+  return <Dashboard />
+}
+
           {/* Supervisor+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.SUP_UP} />}>
             <Route element={<AppShell />}>
               <Route path="/supervisor/pending"
-                element={<Placeholder title="Pending Approvals" />} />
+                element={<PendingApprovals />} />
               <Route path="/supervisor/calendar"
-                element={<Placeholder title="Team Calendar" />} />
+                element={<TeamCalendar />} />
             </Route>
           </Route>
 

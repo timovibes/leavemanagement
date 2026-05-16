@@ -9,6 +9,10 @@ import useAuthStore from '../../store/authStore'
 import api from '../../lib/axios'
 import toast from 'react-hot-toast'
 
+import { useUnreadCount } from '../../hooks/useNotifications'
+
+const { data: unread = 0 } = useUnreadCount()
+
 const navByRole = {
   EMPLOYEE: [
     { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
