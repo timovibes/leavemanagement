@@ -6,26 +6,33 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AppShell from './components/layout/AppShell'
 import Unauthorized from './pages/Unauthorized'
 
-// Auth pages (lazy-loaded in later phases)
+// Auth
 import Login from './pages/auth/Login'
-
 import ForgotPassword from './pages/auth/ForgotPassword'
 
-// Placeholder pages (replaced phase by phase)
+// Employee
+import Dashboard from './pages/employee/Dashboard'
+import ApplyLeave from './pages/employee/ApplyLeave'
+import MyLeaves from './pages/employee/MyLeaves'
+import LeaveDetail from './pages/employee/LeaveDetail'
+import Profile from './pages/employee/Profile'
+import Notifications from './pages/employee/Notifications'
+
+// Placeholders for future phases
 const Placeholder = ({ title }) => (
   <div className="page-container">
     <div className="card mt-6">
       <h2 className="text-kfs-green">{title}</h2>
-      <p className="text-gray-400 mt-1 text-sm">Coming in next phase...</p>
+      <p className="text-gray-400 mt-1 text-sm">Coming soon...</p>
     </div>
   </div>
 )
 
 const ROLES = {
-  ALL:      ['EMPLOYEE', 'SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
-  HR_UP:    ['HR_OFFICER', 'HEAD_HR', 'ADMIN'],
-  HEAD_UP:  ['HEAD_HR', 'ADMIN'],
-  SUP_UP:   ['SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
+  ALL:     ['EMPLOYEE', 'SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
+  HR_UP:   ['HR_OFFICER', 'HEAD_HR', 'ADMIN'],
+  HEAD_UP: ['HEAD_HR', 'ADMIN'],
+  SUP_UP:  ['SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
 }
 
 export default function App() {
@@ -43,22 +50,19 @@ export default function App() {
         <Routes>
           {/* Public */}
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Protected — all roles */}
+          {/* All roles */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.ALL} />}>
             <Route element={<AppShell />}>
-              <Route path="/dashboard"
-                element={<Placeholder title="Dashboard" />} />
-              <Route path="/apply-leave"
-                element={<Placeholder title="Apply Leave" />} />
-              <Route path="/my-leaves"
-                element={<Placeholder title="My Leaves" />} />
-              <Route path="/notifications"
-                element={<Placeholder title="Notifications" />} />
-              <Route path="/profile"
-                element={<Placeholder title="Profile" />} />
+              <Route path="/dashboard"       element={<Dashboard />} />
+              <Route path="/apply-leave"     element={<ApplyLeave />} />
+              <Route path="/my-leaves"       element={<MyLeaves />} />
+              <Route path="/my-leaves/:id"   element={<LeaveDetail />} />
+              <Route path="/notifications"   element={<Notifications />} />
+              <Route path="/profile"         element={<Profile />} />
             </Route>
           </Route>
 
@@ -92,7 +96,6 @@ export default function App() {
             </Route>
           </Route>
 
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
