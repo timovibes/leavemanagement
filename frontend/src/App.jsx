@@ -102,7 +102,7 @@ export default function App() {
           {/* HR+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.HR_UP} />}>
             <Route element={<AppShell />}>
-              <Route path="/hr/queue"       element={<HRQueue />} />
+              <Route path="/hr/pending"       element={<HRQueue />} />
               <Route path="/hr/employees"   element={<EmployeeManagement />} />
             </Route>
           </Route>
