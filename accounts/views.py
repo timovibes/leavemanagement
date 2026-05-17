@@ -55,7 +55,6 @@ class RegisterEmployeeView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         employee = serializer.save()
-        # Send welcome email
         send_mail(
             subject='Welcome to KFS Leave System',
             message=(
@@ -82,7 +81,6 @@ class MeView(APIView):
             request.user, data=request.data, partial=True
         )
         serializer.is_valid(raise_exception=True)
-        # Prevent role/grade self-editing
         for protected in ['role', 'grade', 'salary_band', 'personal_number']:
             serializer.validated_data.pop(protected, None)
         serializer.save()
@@ -153,18 +151,24 @@ class ResetPasswordView(APIView):
 
 
 class EmployeeListView(generics.ListAPIView):
-    """HR and above can list all employees."""
     serializer_class = EmployeeSerializer
-    permission_classes = [IsHROfficer]
+    permission_classes = [permissions.IsAuthenticated]  # was IsHROfficer
 
     def get_queryset(self):
         qs = Employee.objects.select_related('department').all()
+        user = self.request.user
         department = self.request.query_params.get('department')
         role = self.request.query_params.get('role')
+
+        # Non-HR/Admin users can only see their own department
+        if user.role not in ['HR', 'ADMIN']:
+            qs = qs.filter(department=user.department)
+
         if department:
             qs = qs.filter(department_id=department)
         if role:
             qs = qs.filter(role=role)
+
         return qs
 
 
