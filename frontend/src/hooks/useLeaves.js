@@ -2,27 +2,29 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../lib/axios'
 import toast from 'react-hot-toast'
 
+const toArray = (data) => Array.isArray(data) ? data : (data?.results ?? [])
+
 export const useLeaveBalances = (year) =>
   useQuery({
     queryKey: ['balances', year],
-    queryFn: () => api.get(`/leaves/balances/?year=${year}`).then(r => r.data),
+    queryFn: () => api.get(`/leaves/balances/?year=${year}`).then(r => toArray(r.data)),
   })
 
 export const useLeaveTypes = () =>
   useQuery({
     queryKey: ['leave-types'],
-    queryFn: () => api.get('/leaves/types/').then(r => r.data),
+    queryFn: () => api.get('/leaves/types/').then(r => toArray(r.data)),
   })
 
 export const useMyLeaves = (filters = {}) => {
   const params = new URLSearchParams()
-  if (filters.year) params.append('year', filters.year)
-  if (filters.status) params.append('status', filters.status)
+  if (filters.year)       params.append('year', filters.year)
+  if (filters.status)     params.append('status', filters.status)
   if (filters.leave_type) params.append('leave_type', filters.leave_type)
 
   return useQuery({
     queryKey: ['my-leaves', filters],
-    queryFn: () => api.get(`/leaves/my/?${params}`).then(r => r.data),
+    queryFn: () => api.get(`/leaves/my/?${params}`).then(r => toArray(r.data)),
   })
 }
 

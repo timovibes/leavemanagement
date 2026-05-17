@@ -22,12 +22,10 @@ const balanceColors = [
 
 export default function Dashboard() {
   const { user } = useAuthStore()
-  const { data: balancesRaw, isLoading: balLoading } = useLeaveBalances(currentYear)
-  const balances = Array.isArray(balancesRaw) ? balancesRaw : (balancesRaw?.results || [])
-  const { data: myLeavesData, isLoading: leavesLoading } = useMyLeaves({})
+  const { data: balances = [], isLoading: balLoading } = useLeaveBalances(currentYear)
+  const { data: leaves = [], isLoading: leavesLoading } = useMyLeaves({})
   const { data: unread = 0 } = useUnreadCount()
 
-  const leaves = myLeavesData?.results || myLeavesData || []
   const recent = leaves.slice(0, 5)
 
   const stats = {
