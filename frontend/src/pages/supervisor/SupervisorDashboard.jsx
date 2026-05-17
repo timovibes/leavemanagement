@@ -7,7 +7,10 @@ import StatusBadge from '../../components/StatusBadge'
 export default function SupervisorDashboard() {
   const { user } = useAuthStore()
   const { data: pending = [] } = usePendingSupervisor()
-  const { data: teamLeaves = [] } = useTeamLeaves()
+  const { data: teamLeavesData } = useTeamLeaves()
+
+  // Guard against null/undefined — default only covers undefined, not null
+  const teamLeaves = Array.isArray(teamLeavesData) ? teamLeavesData : []
 
   const approvedLeaves = teamLeaves.filter(l => l.status === 'APPROVED')
   const onLeaveToday = approvedLeaves.filter(l => {
@@ -114,8 +117,7 @@ export default function SupervisorDashboard() {
             {pending.length > 3 && (
               <Link
                 to="/supervisor/pending"
-                className="block text-center text-xs text-kfs-green
-                           font-medium py-2"
+                className="block text-center text-xs text-kfs-green font-medium py-2"
               >
                 +{pending.length - 3} more pending
               </Link>
