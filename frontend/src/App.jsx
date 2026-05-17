@@ -30,6 +30,11 @@ import HRDashboard from './pages/hr/HRDashboard'
 import HRQueue from './pages/hr/HRQueue'
 import EmployeeManagement from './pages/hr/EmployeeManagement'
 
+
+import HeadHRDashboard from './pages/headhr/HeadHRDashboard'
+import FinalApprovals from './pages/headhr/FinalApprovals'
+import Reports from './pages/headhr/Reports'
+
 // Placeholders for future phases
 const Placeholder = ({ title }) => (
   <div className="page-container">
@@ -82,7 +87,7 @@ export default function App() {
   const { user } = useAuthStore()
   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
   if (user?.role === 'HR_OFFICER') return <HRDashboard />
-  if (user?.role === 'HEAD_HR')    return <Placeholder title="Head HR Dashboard" />
+  if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
   return <Dashboard />
 }
 
@@ -96,11 +101,11 @@ export default function App() {
             </Route>
           </Route>
 
-          {/* HR+ */}
-<Route element={<ProtectedRoute allowedRoles={ROLES.HR_UP} />}>
+          {/* Head HR+ */}
+<Route element={<ProtectedRoute allowedRoles={ROLES.HEAD_UP} />}>
   <Route element={<AppShell />}>
-    <Route path="/hr/pending"   element={<HRQueue />} />
-    <Route path="/hr/employees" element={<EmployeeManagement />} />
+    <Route path="/head-hr/pending" element={<FinalApprovals />} />
+    <Route path="/head-hr/reports" element={<Reports />} />
   </Route>
 </Route>
 
