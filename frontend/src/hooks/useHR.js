@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../lib/axios'
 import toast from 'react-hot-toast'
 
+const toArray = (data) => Array.isArray(data) ? data : (data?.results ?? [])
+
 export const usePendingHR = () =>
   useQuery({
     queryKey: ['pending-hr'],
-    queryFn: () => api.get('/leaves/pending/hr/').then(r => r.data),
+    queryFn: () => api.get('/leaves/pending/hr/').then(r => toArray(r.data)),  // 👈
   })
 
 export const useAllLeaves = (filters = {}) => {
@@ -15,7 +17,7 @@ export const useAllLeaves = (filters = {}) => {
   if (filters.year)       params.append('year', filters.year)
   return useQuery({
     queryKey: ['all-leaves', filters],
-    queryFn: () => api.get(`/leaves/all/?${params}`).then(r => r.data),
+    queryFn: () => api.get(`/leaves/all/?${params}`).then(r => toArray(r.data)),  // 👈
   })
 }
 
@@ -25,7 +27,7 @@ export const useEmployees = (filters = {}) => {
   if (filters.role)       params.append('role', filters.role)
   return useQuery({
     queryKey: ['employees', filters],
-    queryFn: () => api.get(`/auth/employees/?${params}`).then(r => r.data),
+    queryFn: () => api.get(`/auth/employees/?${params}`).then(r => toArray(r.data)),  // 👈
   })
 }
 
@@ -64,7 +66,7 @@ export const useLeaveBalances = (employeeId) =>
     queryKey: ['employee-balances', employeeId],
     queryFn: () =>
       api.get(`/leaves/balances/?employee=${employeeId}`)
-        .then(r => r.data),
+        .then(r => toArray(r.data)),  // 👈
     enabled: !!employeeId,
   })
 
@@ -109,5 +111,5 @@ export const useDepartments = () =>
   useQuery({
     queryKey: ['departments'],
     queryFn: () => api.get('/auth/employees/?role=SUPERVISOR')
-      .then(r => r.data),
+      .then(r => toArray(r.data)),  // 👈
   })

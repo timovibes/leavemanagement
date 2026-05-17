@@ -12,15 +12,13 @@ const currentYear = new Date().getFullYear()
 export default function HRDashboard() {
   const { user } = useAuthStore()
   const { data: pending = [] } = usePendingHR()
-  const { data: allData } = useAllLeaves({ year: String(currentYear) })
-
-  const all = allData?.results || allData || []
+  const { data: allLeaves = [] } = useAllLeaves({ year: String(currentYear) })
 
   const stats = {
     hrReview:  pending.filter(l => l.status === 'HR_REVIEW').length,
     hrCheck:   pending.filter(l => l.status === 'HR_CHECK').length,
-    approved:  all.filter(l => l.status === 'APPROVED').length,
-    rejected:  all.filter(l => l.status === 'REJECTED').length,
+    approved:  allLeaves.filter(l => l.status === 'APPROVED').length,
+    rejected:  allLeaves.filter(l => l.status === 'REJECTED').length,
   }
 
   return (
