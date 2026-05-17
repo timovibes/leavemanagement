@@ -111,7 +111,7 @@ export default function Login() {
 
             {/* Forgot password */}
             <div className="text-right">
-              
+              <a
                 href="/forgot-password"
                 className="text-xs text-kfs-green hover:underline"
               >

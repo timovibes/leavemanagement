@@ -54,7 +54,7 @@ export default function LeaveDetail() {
         <div className="ml-auto flex items-center gap-2">
           <StatusBadge status={leave.status} />
           {leave.status === 'APPROVED' && (
-            
+            <a
               href={`${import.meta.env.VITE_API_BASE_URL}/leaves/${leave.id}/download-pdf/`}
               target="_blank"
               rel="noreferrer"

@@ -178,7 +178,7 @@ export default function MyLeaves() {
                     </>
                   )}
                   {leave.status === 'APPROVED' && (
-                    
+                    <a
                       href={`${import.meta.env.VITE_API_BASE_URL}/leaves/${leave.id}/download-pdf/`}
                       target="_blank"
                       rel="noreferrer"
