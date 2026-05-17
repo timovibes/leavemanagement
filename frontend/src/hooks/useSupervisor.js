@@ -2,16 +2,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../lib/axios'
 import toast from 'react-hot-toast'
 
+const toArray = (data) => Array.isArray(data) ? data : (data?.results ?? [])
+
 export const usePendingSupervisor = () =>
   useQuery({
     queryKey: ['pending-supervisor'],
-    queryFn: () => api.get('/leaves/pending/supervisor/').then(r => r.data),
+    queryFn: () => api.get('/leaves/pending/supervisor/').then(r => toArray(r.data)),
   })
 
 export const useTeamLeaves = () =>
   useQuery({
     queryKey: ['team-leaves'],
-    queryFn: () => api.get('/leaves/team/').then(r => r.data),
+    queryFn: () => api.get('/leaves/team/').then(r => toArray(r.data)),
   })
 
 export const useSupervisorReview = () => {
