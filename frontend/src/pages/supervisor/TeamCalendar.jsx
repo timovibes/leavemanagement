@@ -33,12 +33,8 @@ export default function TeamCalendar() {
   const [viewMonth, setViewMonth] = useState(today.getMonth())
   const [selectedDay, setSelectedDay] = useState(null)
 
-  const { data: teamLeavesData, isLoading } = useTeamLeaves()
+  const { data: teamLeaves = [], isLoading } = useTeamLeaves()
 
-  // Guard against null — = [] default only covers undefined, not null
-  const teamLeaves = Array.isArray(teamLeavesData) ? teamLeavesData : []
-
-  // Only show approved + in-progress leaves
   const activeLeaves = useMemo(() =>
     teamLeaves.filter(l =>
       ['APPROVED', 'SUPERVISOR_REVIEW', 'HR_REVIEW', 'HR_CHECK'].includes(l.status)
@@ -46,7 +42,6 @@ export default function TeamCalendar() {
     [teamLeaves]
   )
 
-  // Unique employees with colors
   const employeeColors = useMemo(() => {
     const map = {}
     const names = [...new Set(activeLeaves.map(l => l.employee_name))]
@@ -82,12 +77,10 @@ export default function TeamCalendar() {
 
       {/* Calendar card */}
       <div className="card mb-4">
-        {/* Month navigation */}
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={prevMonth}
-            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600
-                       transition-colors"
+            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
           >
             <ChevronLeft size={18} />
           </button>
@@ -96,31 +89,25 @@ export default function TeamCalendar() {
           </h2>
           <button
             onClick={nextMonth}
-            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600
-                       transition-colors"
+            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
           >
             <ChevronRight size={18} />
           </button>
         </div>
 
-        {/* Day headers */}
         <div className="grid grid-cols-7 mb-1">
           {DAYS.map(d => (
-            <div key={d} className="text-center text-xs font-medium
-                                    text-gray-400 py-1">
+            <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
               {d}
             </div>
           ))}
         </div>
 
-        {/* Calendar grid */}
         <div className="grid grid-cols-7 gap-y-1">
-          {/* Empty cells for offset */}
           {Array.from({ length: firstDay }).map((_, i) => (
             <div key={`empty-${i}`} />
           ))}
 
-          {/* Day cells */}
           {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
             const leavesOnDay = getLeavesOnDay(day)
             const isToday =
@@ -143,8 +130,6 @@ export default function TeamCalendar() {
                           `}
               >
                 <span className="text-xs leading-none mb-1">{day}</span>
-
-                {/* Leave dots */}
                 {leavesOnDay.length > 0 && (
                   <div className="flex gap-0.5 flex-wrap justify-center px-1">
                     {leavesOnDay.slice(0, 3).map((l, i) => (

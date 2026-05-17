@@ -7,10 +7,7 @@ import StatusBadge from '../../components/StatusBadge'
 export default function SupervisorDashboard() {
   const { user } = useAuthStore()
   const { data: pending = [] } = usePendingSupervisor()
-  const { data: teamLeavesData } = useTeamLeaves()
-
-  // Guard against null/undefined — default only covers undefined, not null
-  const teamLeaves = Array.isArray(teamLeavesData) ? teamLeavesData : []
+  const { data: teamLeaves = [] } = useTeamLeaves()
 
   const approvedLeaves = teamLeaves.filter(l => l.status === 'APPROVED')
   const onLeaveToday = approvedLeaves.filter(l => {
