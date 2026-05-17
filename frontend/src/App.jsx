@@ -18,24 +18,23 @@ import LeaveDetail from './pages/employee/LeaveDetail'
 import Profile from './pages/employee/Profile'
 import Notifications from './pages/employee/Notifications'
 
-
+// Supervisor
 import SupervisorDashboard from './pages/supervisor/SupervisorDashboard'
 import PendingApprovals from './pages/supervisor/PendingApprovals'
 import TeamCalendar from './pages/supervisor/TeamCalendar'
 
-import { useNavigate } from 'react-router-dom'
-import useAuthStore from './store/authStore'
-
+// HR
 import HRDashboard from './pages/hr/HRDashboard'
 import HRQueue from './pages/hr/HRQueue'
 import EmployeeManagement from './pages/hr/EmployeeManagement'
 
-
+// Head HR
 import HeadHRDashboard from './pages/headhr/HeadHRDashboard'
 import FinalApprovals from './pages/headhr/FinalApprovals'
 import Reports from './pages/headhr/Reports'
 
-// Placeholders for future phases
+import useAuthStore from './store/authStore'
+
 const Placeholder = ({ title }) => (
   <div className="page-container">
     <div className="card mt-6">
@@ -50,6 +49,15 @@ const ROLES = {
   HR_UP:   ['HR_OFFICER', 'HEAD_HR', 'ADMIN'],
   HEAD_UP: ['HEAD_HR', 'ADMIN'],
   SUP_UP:  ['SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
+}
+
+// ✅ Moved OUTSIDE the component return
+const DashboardRedirect = () => {
+  const { user } = useAuthStore()
+  if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
+  if (user?.role === 'HR_OFFICER') return <HRDashboard />
+  if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
+  return <Dashboard />
 }
 
 export default function App() {
@@ -74,48 +82,36 @@ export default function App() {
           {/* All roles */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.ALL} />}>
             <Route element={<AppShell />}>
-              <Route path="/dashboard"       element={<Dashboard />} />
-              <Route path="/apply-leave"     element={<ApplyLeave />} />
-              <Route path="/my-leaves"       element={<MyLeaves />} />
-              <Route path="/my-leaves/:id"   element={<LeaveDetail />} />
-              <Route path="/notifications"   element={<Notifications />} />
-              <Route path="/profile"         element={<Profile />} />
+              <Route path="/dashboard"     element={<DashboardRedirect />} />
+              <Route path="/apply-leave"   element={<ApplyLeave />} />
+              <Route path="/my-leaves"     element={<MyLeaves />} />
+              <Route path="/my-leaves/:id" element={<LeaveDetail />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/profile"       element={<Profile />} />
             </Route>
           </Route>
-
-          const DashboardRedirect = () => {
-  const { user } = useAuthStore()
-  if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
-  if (user?.role === 'HR_OFFICER') return <HRDashboard />
-  if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
-  return <Dashboard />
-}
 
           {/* Supervisor+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.SUP_UP} />}>
             <Route element={<AppShell />}>
-              <Route path="/supervisor/pending"
-                element={<PendingApprovals />} />
-              <Route path="/supervisor/calendar"
-                element={<TeamCalendar />} />
+              <Route path="/supervisor/pending"  element={<PendingApprovals />} />
+              <Route path="/supervisor/calendar" element={<TeamCalendar />} />
+            </Route>
+          </Route>
+
+          {/* HR+ */}
+          <Route element={<ProtectedRoute allowedRoles={ROLES.HR_UP} />}>
+            <Route element={<AppShell />}>
+              <Route path="/hr/queue"       element={<HRQueue />} />
+              <Route path="/hr/employees"   element={<EmployeeManagement />} />
             </Route>
           </Route>
 
           {/* Head HR+ */}
-<Route element={<ProtectedRoute allowedRoles={ROLES.HEAD_UP} />}>
-  <Route element={<AppShell />}>
-    <Route path="/head-hr/pending" element={<FinalApprovals />} />
-    <Route path="/head-hr/reports" element={<Reports />} />
-  </Route>
-</Route>
-
-          {/* Head HR+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.HEAD_UP} />}>
             <Route element={<AppShell />}>
-              <Route path="/head-hr/pending"
-                element={<Placeholder title="Final Approvals" />} />
-              <Route path="/head-hr/reports"
-                element={<Placeholder title="Reports" />} />
+              <Route path="/head-hr/pending" element={<FinalApprovals />} />
+              <Route path="/head-hr/reports" element={<Reports />} />
             </Route>
           </Route>
 
