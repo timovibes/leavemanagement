@@ -33,7 +33,10 @@ export default function TeamCalendar() {
   const [viewMonth, setViewMonth] = useState(today.getMonth())
   const [selectedDay, setSelectedDay] = useState(null)
 
-  const { data: teamLeaves = [], isLoading } = useTeamLeaves()
+  const { data: teamLeavesData, isLoading } = useTeamLeaves()
+
+  // Guard against null — = [] default only covers undefined, not null
+  const teamLeaves = Array.isArray(teamLeavesData) ? teamLeavesData : []
 
   // Only show approved + in-progress leaves
   const activeLeaves = useMemo(() =>
