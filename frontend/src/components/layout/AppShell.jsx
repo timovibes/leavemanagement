@@ -44,14 +44,13 @@ export default function AppShell() {
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // ✅ Moved inside the component
   const { data: unread = 0 } = useUnreadCount()
 
   const navItems = navByRole[user?.role] || navByRole.EMPLOYEE
 
   const handleLogout = async () => {
     try {
-      const refresh = localStorage.getItem('refresh_token')
+      const refresh = sessionStorage.getItem('refresh_token')
       await api.post('/auth/logout/', { refresh })
     } catch (_) {}
     logout()
@@ -99,12 +98,27 @@ export default function AppShell() {
       {/* User info + logout */}
       <div className="border-t border-kfs-dark p-4">
         <div className="mb-3">
-          <p className="text-white text-sm font-medium truncate">{user?.name}</p>
-          <p className="text-green-300 text-xs truncate">{user?.email}</p>
-          <span className="mt-1 inline-block bg-kfs-dark text-green-300
-                           text-xs px-2 py-0.5 rounded-full">
-            {user?.role?.replace('_', ' ')}
-          </span>
+          <div className="flex items-center justify-between">
+            <div className="min-w-0">
+              <p className="text-white text-sm font-medium truncate">{user?.name}</p>
+              <p className="text-green-300 text-xs truncate">{user?.email}</p>
+              <span className="mt-1 inline-block bg-kfs-dark text-green-300
+                               text-xs px-2 py-0.5 rounded-full">
+                {user?.role?.replace('_', ' ')}
+              </span>
+            </div>
+            {/* Bell icon for desktop */}
+            <NavLink to="/notifications" className="relative shrink-0 ml-2">
+              <Bell size={20} className="text-green-300 hover:text-white transition-colors" />
+              {unread > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white
+                                 text-xs w-4 h-4 rounded-full flex items-center
+                                 justify-center">
+                  {unread}
+                </span>
+              )}
+            </NavLink>
+          </div>
         </div>
         <button
           onClick={handleLogout}
