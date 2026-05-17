@@ -3,15 +3,12 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, History, Bell,
   Users, CheckSquare, Calendar, FileCheck,
-  BarChart2, LogOut, Menu, X, ChevronRight
+  BarChart2, LogOut, Menu, X
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import api from '../../lib/axios'
 import toast from 'react-hot-toast'
-
 import { useUnreadCount } from '../../hooks/useNotifications'
-
-const { data: unread = 0 } = useUnreadCount()
 
 const navByRole = {
   EMPLOYEE: [
@@ -20,25 +17,25 @@ const navByRole = {
     { to: '/my-leaves',    label: 'My Leaves',    icon: History },
   ],
   SUPERVISOR: [
-    { to: '/dashboard',           label: 'Dashboard',   icon: LayoutDashboard },
-    { to: '/supervisor/pending',  label: 'Approvals',   icon: CheckSquare },
+    { to: '/dashboard',           label: 'Dashboard',     icon: LayoutDashboard },
+    { to: '/supervisor/pending',  label: 'Approvals',     icon: CheckSquare },
     { to: '/supervisor/calendar', label: 'Team Calendar', icon: Calendar },
   ],
   HR_OFFICER: [
-    { to: '/dashboard',    label: 'Dashboard',   icon: LayoutDashboard },
-    { to: '/hr/pending',   label: 'HR Queue',    icon: FileCheck },
-    { to: '/hr/employees', label: 'Employees',   icon: Users },
+    { to: '/dashboard',    label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/hr/pending',   label: 'HR Queue',  icon: FileCheck },
+    { to: '/hr/employees', label: 'Employees', icon: Users },
   ],
   HEAD_HR: [
-    { to: '/dashboard',        label: 'Dashboard',    icon: LayoutDashboard },
+    { to: '/dashboard',        label: 'Dashboard',       icon: LayoutDashboard },
     { to: '/head-hr/pending',  label: 'Final Approvals', icon: CheckSquare },
-    { to: '/head-hr/reports',  label: 'Reports',      icon: BarChart2 },
-    { to: '/hr/employees',     label: 'Employees',    icon: Users },
+    { to: '/head-hr/reports',  label: 'Reports',         icon: BarChart2 },
+    { to: '/hr/employees',     label: 'Employees',       icon: Users },
   ],
   ADMIN: [
-    { to: '/dashboard',    label: 'Dashboard',   icon: LayoutDashboard },
-    { to: '/hr/pending',   label: 'HR Queue',    icon: FileCheck },
-    { to: '/hr/employees', label: 'Employees',   icon: Users },
+    { to: '/dashboard',    label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/hr/pending',   label: 'HR Queue',  icon: FileCheck },
+    { to: '/hr/employees', label: 'Employees', icon: Users },
   ],
 }
 
@@ -46,6 +43,9 @@ export default function AppShell() {
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // ✅ Moved inside the component
+  const { data: unread = 0 } = useUnreadCount()
 
   const navItems = navByRole[user?.role] || navByRole.EMPLOYEE
 
@@ -156,6 +156,13 @@ export default function AppShell() {
           <span className="font-semibold text-sm">KFS Leave System</span>
           <NavLink to="/notifications" className="relative">
             <Bell size={20} />
+            {unread > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white
+                               text-xs w-4 h-4 rounded-full flex items-center
+                               justify-center">
+                {unread}
+              </span>
+            )}
           </NavLink>
         </header>
 
