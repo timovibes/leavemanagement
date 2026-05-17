@@ -246,7 +246,7 @@ class WorkingDaysCalculatorView(APIView):
         return Response({'working_days': days})
     
 class DownloadLeavePDFView(APIView):
-permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
 def get(self, request, pk):
     leave_request = get_object_or_404(LeaveRequest, pk=pk)
