@@ -26,6 +26,10 @@ import TeamCalendar from './pages/supervisor/TeamCalendar'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from './store/authStore'
 
+import HRDashboard from './pages/hr/HRDashboard'
+import HRQueue from './pages/hr/HRQueue'
+import EmployeeManagement from './pages/hr/EmployeeManagement'
+
 // Placeholders for future phases
 const Placeholder = ({ title }) => (
   <div className="page-container">
@@ -77,7 +81,7 @@ export default function App() {
           const DashboardRedirect = () => {
   const { user } = useAuthStore()
   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
-  if (user?.role === 'HR_OFFICER') return <Placeholder title="HR Dashboard" />
+  if (user?.role === 'HR_OFFICER') return <HRDashboard />
   if (user?.role === 'HEAD_HR')    return <Placeholder title="Head HR Dashboard" />
   return <Dashboard />
 }
@@ -93,14 +97,12 @@ export default function App() {
           </Route>
 
           {/* HR+ */}
-          <Route element={<ProtectedRoute allowedRoles={ROLES.HR_UP} />}>
-            <Route element={<AppShell />}>
-              <Route path="/hr/pending"
-                element={<Placeholder title="HR Queue" />} />
-              <Route path="/hr/employees"
-                element={<Placeholder title="Employee Management" />} />
-            </Route>
-          </Route>
+<Route element={<ProtectedRoute allowedRoles={ROLES.HR_UP} />}>
+  <Route element={<AppShell />}>
+    <Route path="/hr/pending"   element={<HRQueue />} />
+    <Route path="/hr/employees" element={<EmployeeManagement />} />
+  </Route>
+</Route>
 
           {/* Head HR+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.HEAD_UP} />}>

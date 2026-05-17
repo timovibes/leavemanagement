@@ -277,3 +277,27 @@ def get(self, request, pk):
     )
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
+
+class SetLeaveBalanceView(APIView):
+    permission_classes = [IsHROfficer]
+
+    def post(self, request):
+        from .models import LeaveBalance, LeaveType
+        employee_id  = request.data.get('employee')
+        leave_type_id = request.data.get('leave_type')
+        year         = request.data.get('year')
+        entitlement  = request.data.get('total_entitlement')
+
+        if not all([employee_id, leave_type_id, year, entitlement]):
+            return Response(
+                {'detail': 'employee, leave_type, year and total_entitlement required.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        balance, created = LeaveBalance.objects.update_or_create(
+            employee_id=employee_id,
+            leave_type_id=leave_type_id,
+            year=year,
+            defaults={'total_entitlement': int(entitlement)}
+        )
+        return Response(LeaveBalanceSerializer(balance).data)
