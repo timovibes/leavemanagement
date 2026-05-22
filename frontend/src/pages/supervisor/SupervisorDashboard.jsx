@@ -24,7 +24,9 @@ export default function SupervisorDashboard() {
         <h1 className="text-kfs-dark">
           Hello, {user?.name?.split(' ')[0]} 👋
         </h1>
-        <p className="text-gray-500 text-sm">Supervisor Dashboard</p>
+        <p className="text-gray-500 text-sm">
+          Supervisor {user?.department_name} department
+        </p>
       </div>
 
       {/* Stat cards */}
