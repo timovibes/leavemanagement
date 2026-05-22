@@ -10,12 +10,6 @@ import api from '../../lib/axios'
 import toast from 'react-hot-toast'
 import { useUnreadCount } from '../../hooks/useNotifications'
 
-import {
-  LayoutDashboard, FileText, History, Bell,
-  Users, CheckSquare, Calendar, FileCheck,
-  BarChart2, LogOut, Menu, X, Settings
-} from 'lucide-react'
-
 const navByRole = {
   EMPLOYEE: [
     { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
