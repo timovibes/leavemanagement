@@ -158,7 +158,7 @@ class ResetPasswordView(APIView):
 
 class EmployeeListView(generics.ListAPIView):
     serializer_class = EmployeeSerializer
-    permission_classes = [permissions.IsAuthenticated]  # was IsHROfficer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         qs = Employee.objects.select_related('department').all()
@@ -166,8 +166,8 @@ class EmployeeListView(generics.ListAPIView):
         department = self.request.query_params.get('department')
         role = self.request.query_params.get('role')
 
-        # Non-HR/Admin users can only see their own department
-        if user.role not in ['HR', 'ADMIN']:
+        # Only restrict non-HR roles to their department
+        if user.role not in ['HR_OFFICER', 'HEAD_HR', 'ADMIN']:
             qs = qs.filter(department=user.department)
 
         if department:
