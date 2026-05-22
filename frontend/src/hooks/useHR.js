@@ -7,7 +7,7 @@ const toArray = (data) => Array.isArray(data) ? data : (data?.results ?? [])
 export const usePendingHR = () =>
   useQuery({
     queryKey: ['pending-hr'],
-    queryFn: () => api.get('/leaves/pending/hr/').then(r => toArray(r.data)),  // 👈
+    queryFn: () => api.get('/leaves/pending/hr/').then(r => toArray(r.data)),
   })
 
 export const useAllLeaves = (filters = {}) => {
@@ -17,7 +17,7 @@ export const useAllLeaves = (filters = {}) => {
   if (filters.year)       params.append('year', filters.year)
   return useQuery({
     queryKey: ['all-leaves', filters],
-    queryFn: () => api.get(`/leaves/all/?${params}`).then(r => toArray(r.data)),  // 👈
+    queryFn: () => api.get(`/leaves/all/?${params}`).then(r => toArray(r.data)),
   })
 }
 
@@ -27,7 +27,7 @@ export const useEmployees = (filters = {}) => {
   if (filters.role)       params.append('role', filters.role)
   return useQuery({
     queryKey: ['employees', filters],
-    queryFn: () => api.get(`/auth/employees/?${params}`).then(r => toArray(r.data)),  // 👈
+    queryFn: () => api.get(`/auth/employees/?${params}`).then(r => toArray(r.data)),
   })
 }
 
@@ -36,7 +36,8 @@ export const useCreateEmployee = () => {
   return useMutation({
     mutationFn: (data) => api.post('/auth/register/', data),
     onSuccess: () => {
-      qc.invalidateQueries(['employees'])
+      // ✅ Fix: v5 requires object syntax — v4 array syntax was silently ignored
+      qc.invalidateQueries({ queryKey: ['employees'] })
       toast.success('Employee created successfully.')
     },
     onError: (err) => {
@@ -54,7 +55,8 @@ export const useUpdateEmployee = () => {
   return useMutation({
     mutationFn: ({ id, data }) => api.patch(`/auth/employees/${id}/`, data),
     onSuccess: () => {
-      qc.invalidateQueries(['employees'])
+      // ✅ Fix: same v5 object syntax
+      qc.invalidateQueries({ queryKey: ['employees'] })
       toast.success('Employee updated.')
     },
     onError: () => toast.error('Update failed.'),
@@ -66,7 +68,7 @@ export const useLeaveBalances = (employeeId) =>
     queryKey: ['employee-balances', employeeId],
     queryFn: () =>
       api.get(`/leaves/balances/?employee=${employeeId}`)
-        .then(r => toArray(r.data)),  // 👈
+        .then(r => toArray(r.data)),
     enabled: !!employeeId,
   })
 
@@ -75,8 +77,8 @@ export const useHRReview = () => {
   return useMutation({
     mutationFn: ({ id, data }) => api.post(`/leaves/${id}/hr-review/`, data),
     onSuccess: () => {
-      qc.invalidateQueries(['pending-hr'])
-      qc.invalidateQueries(['all-leaves'])
+      qc.invalidateQueries({ queryKey: ['pending-hr'] })
+      qc.invalidateQueries({ queryKey: ['all-leaves'] })
       toast.success('Part III completed — moved to HR Check.')
     },
     onError: (err) => toast.error(err.response?.data?.detail || 'Failed.'),
@@ -88,7 +90,7 @@ export const useHRAllowance = () => {
   return useMutation({
     mutationFn: ({ id, data }) => api.post(`/leaves/${id}/hr-allowance/`, data),
     onSuccess: () => {
-      qc.invalidateQueries(['pending-hr'])
+      qc.invalidateQueries({ queryKey: ['pending-hr'] })
       toast.success('Part IV — allowance confirmed.')
     },
     onError: (err) => toast.error(err.response?.data?.detail || 'Failed.'),
@@ -100,16 +102,16 @@ export const useHRVerify = () => {
   return useMutation({
     mutationFn: ({ id, data }) => api.post(`/leaves/${id}/hr-verify/`, data),
     onSuccess: () => {
-      qc.invalidateQueries(['pending-hr'])
+      qc.invalidateQueries({ queryKey: ['pending-hr'] })
       toast.success('Part V verified — forwarded to Head HR.')
     },
     onError: (err) => toast.error(err.response?.data?.detail || 'Failed.'),
   })
 }
 
+// ✅ Fix: was fetching supervisors instead of the departments endpoint
 export const useDepartments = () =>
   useQuery({
     queryKey: ['departments'],
-    queryFn: () => api.get('/auth/employees/?role=SUPERVISOR')
-      .then(r => toArray(r.data)),  // 👈
+    queryFn: () => api.get('/auth/departments/').then(r => toArray(r.data)),
   })

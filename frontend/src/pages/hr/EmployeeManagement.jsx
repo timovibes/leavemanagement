@@ -4,7 +4,7 @@ import {
   Users, Plus, Search, Edit2,
   ChevronDown, ChevronUp, Loader2, X
 } from 'lucide-react'
-import { useEmployees, useCreateEmployee, useUpdateEmployee } from '../../hooks/useHR'
+import { useEmployees, useCreateEmployee, useUpdateEmployee, useDepartments } from '../../hooks/useHR'
 import { useLeaveTypes } from '../../hooks/useLeaves'
 import api from '../../lib/axios'
 import toast from 'react-hot-toast'
@@ -25,6 +25,7 @@ const GRADES = [
 // ── Create Employee Modal ────────────────────
 function CreateModal({ onClose }) {
   const create = useCreateEmployee()
+  const { data: departments = [] } = useDepartments() // ✅ added
   const {
     register, handleSubmit,
     formState: { errors }
@@ -48,12 +49,12 @@ function CreateModal({ onClose }) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="px-5 py-4 space-y-3">
           {[
-            { name: 'name',            label: 'Full Name',        type: 'text',     req: true },
-            { name: 'email',           label: 'Email',            type: 'email',    req: true },
-            { name: 'personal_number', label: 'Personal Number',  type: 'text',     req: true },
-            { name: 'designation',     label: 'Designation',      type: 'text',     req: true },
-            { name: 'salary_band',     label: 'Monthly Salary (KSh)', type: 'number', req: true },
-            { name: 'password',        label: 'Initial Password', type: 'password', req: true },
+            { name: 'name',            label: 'Full Name',           type: 'text',     req: true },
+            { name: 'email',           label: 'Email',               type: 'email',    req: true },
+            { name: 'personal_number', label: 'Personal Number',     type: 'text',     req: true },
+            { name: 'designation',     label: 'Designation',         type: 'text',     req: true },
+            { name: 'salary_band',     label: 'Monthly Salary (KSh)',type: 'number',   req: true },
+            { name: 'password',        label: 'Initial Password',    type: 'password', req: true },
           ].map(({ name, label, type, req }) => (
             <div key={name}>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -70,6 +71,25 @@ function CreateModal({ onClose }) {
             </div>
           ))}
 
+          {/* ✅ Department — was entirely missing */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Department <span className="text-red-500">*</span>
+            </label>
+            <select
+              className={`input-field ${errors.department ? 'border-red-400' : ''}`}
+              {...register('department', { required: 'Department is required' })}
+            >
+              <option value="">— Select department —</option>
+              {departments.map(d => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+            </select>
+            {errors.department && (
+              <p className="text-red-500 text-xs mt-1">{errors.department.message}</p>
+            )}
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Role <span className="text-red-500">*</span>
@@ -83,6 +103,9 @@ function CreateModal({ onClose }) {
                 <option key={r.value} value={r.value}>{r.label}</option>
               ))}
             </select>
+            {errors.role && (
+              <p className="text-red-500 text-xs mt-1">{errors.role.message}</p>
+            )}
           </div>
 
           <div>
@@ -234,6 +257,7 @@ function EmployeeCard({ employee, leaveTypes }) {
   const [showBalance, setShowBalance] = useState(false)
   const [editing, setEditing] = useState(false)
   const update = useUpdateEmployee()
+  const { data: departments = [] } = useDepartments() // ✅ added for edit form
 
   const {
     register, handleSubmit,
@@ -245,6 +269,7 @@ function EmployeeCard({ employee, leaveTypes }) {
       role:        employee.role,
       grade:       employee.grade,
       salary_band: employee.salary_band,
+      department:  employee.department,  // ✅ added
     }
   })
 
@@ -353,6 +378,20 @@ function EmployeeCard({ employee, leaveTypes }) {
                   {...register('salary_band')}
                 />
               </div>
+
+              {/* ✅ Department in edit form — was missing */}
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Department
+                </label>
+                <select className="input-field" {...register('department')}>
+                  <option value="">— None —</option>
+                  {departments.map(d => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   Role
@@ -443,7 +482,6 @@ export default function EmployeeManagement() {
         </button>
       </div>
 
-      {/* Search & filter */}
       <div className="flex gap-2 mb-4">
         <div className="relative flex-1">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2
@@ -468,7 +506,6 @@ export default function EmployeeManagement() {
         </select>
       </div>
 
-      {/* List */}
       {isLoading ? (
         <div className="space-y-3">
           {[1,2,3,4].map(i => (
