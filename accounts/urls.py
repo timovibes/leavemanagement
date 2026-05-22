@@ -6,6 +6,8 @@ from .views import (
     ResetPasswordView, EmployeeListView, EmployeeDetailView
 )
 
+from .views import DepartmentListCreateView, DepartmentDetailView
+
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
@@ -17,4 +19,7 @@ urlpatterns = [
     path('reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('employees/', EmployeeListView.as_view(), name='employee_list'),
     path('employees/<int:pk>/', EmployeeDetailView.as_view(), name='employee_detail'),
+
+    path('departments/', DepartmentListCreateView.as_view(), name='departments'),
+    path('departments/<int:pk>/', DepartmentDetailView.as_view(), name='department_detail'),
 ]

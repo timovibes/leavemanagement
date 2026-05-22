@@ -20,15 +20,25 @@ from django.core.files.storage import default_storage
 import os
 
 
-class LeaveTypeListView(generics.ListAPIView):
+class LeaveTypeListView(generics.ListCreateAPIView):
     serializer_class = LeaveTypeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsHROfficer()]
+        return [permissions.IsAuthenticated()]
+
     queryset = LeaveType.objects.all()
 
 
-class PublicHolidayListView(generics.ListAPIView):
+class PublicHolidayListView(generics.ListCreateAPIView):
     serializer_class = PublicHolidaySerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsHROfficer()]
+        return [permissions.IsAuthenticated()]
+
     queryset = PublicHoliday.objects.order_by('date')
 
 
@@ -301,3 +311,21 @@ class SetLeaveBalanceView(APIView):
             defaults={'total_entitlement': int(entitlement)}
         )
         return Response(LeaveBalanceSerializer(balance).data)
+    
+class LeaveTypeCreateView(generics.CreateAPIView):
+    serializer_class = LeaveTypeSerializer
+    permission_classes = [IsHROfficer]
+
+class LeaveTypeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LeaveTypeSerializer
+    permission_classes = [IsHROfficer]
+    queryset = LeaveType.objects.all()
+
+class PublicHolidayCreateView(generics.CreateAPIView):
+    serializer_class = PublicHolidaySerializer
+    permission_classes = [IsHROfficer]
+
+class PublicHolidayDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PublicHolidaySerializer
+    permission_classes = [IsHROfficer]
+    queryset = PublicHoliday.objects.all()

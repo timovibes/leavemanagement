@@ -10,6 +10,12 @@ import api from '../../lib/axios'
 import toast from 'react-hot-toast'
 import { useUnreadCount } from '../../hooks/useNotifications'
 
+import {
+  LayoutDashboard, FileText, History, Bell,
+  Users, CheckSquare, Calendar, FileCheck,
+  BarChart2, LogOut, Menu, X, Settings
+} from 'lucide-react'
+
 const navByRole = {
   EMPLOYEE: [
     { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
@@ -33,10 +39,13 @@ const navByRole = {
     { to: '/hr/employees',     label: 'Employees',       icon: Users },
   ],
   ADMIN: [
-    { to: '/dashboard',    label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/hr/pending',   label: 'HR Queue',  icon: FileCheck },
-    { to: '/hr/employees', label: 'Employees', icon: Users },
-  ],
+  { to: '/dashboard',       label: 'Dashboard',       icon: LayoutDashboard },
+  { to: '/admin/settings',  label: 'System Settings', icon: Settings },
+  { to: '/hr/employees',    label: 'Employees',        icon: Users },
+  { to: '/hr/pending',      label: 'HR Queue',         icon: FileCheck },
+  { to: '/head-hr/pending', label: 'Final Approvals',  icon: CheckSquare },
+  { to: '/head-hr/reports', label: 'Reports',          icon: BarChart2 },
+],
 }
 
 export default function AppShell() {

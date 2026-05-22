@@ -35,6 +35,8 @@ import Reports from './pages/headhr/Reports'
 
 import useAuthStore from './store/authStore'
 
+import AdminDashboard from './pages/admin/AdminDashboard'
+
 const Placeholder = ({ title }) => (
   <div className="page-container">
     <div className="card mt-6">
@@ -51,12 +53,13 @@ const ROLES = {
   SUP_UP:  ['SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
 }
 
-// ✅ Moved OUTSIDE the component return
+//Moved OUTSIDE the component return
 const DashboardRedirect = () => {
   const { user } = useAuthStore()
   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
   if (user?.role === 'HR_OFFICER') return <HRDashboard />
   if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
+  if (user?.role === 'ADMIN')      return <AdminDashboard />
   return <Dashboard />
 }
 
@@ -88,6 +91,7 @@ export default function App() {
               <Route path="/my-leaves/:id" element={<LeaveDetail />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/profile"       element={<Profile />} />
+              <Route path="/admin/settings" element={<AdminDashboard />} />
             </Route>
           </Route>
 

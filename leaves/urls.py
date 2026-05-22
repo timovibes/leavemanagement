@@ -20,6 +20,8 @@ from .views import (
     WorkingDaysCalculatorView, DownloadLeavePDFView
 )
 
+from .views import LeaveTypeCreateView, LeaveTypeDetailView, PublicHolidayCreateView, PublicHolidayDetailView
+
 urlpatterns = [
     # Leave types & holidays
     path('types/', LeaveTypeListView.as_view(), name='leave_types'),
@@ -52,4 +54,12 @@ urlpatterns = [
     path('<int:pk>/final-approval/', HeadHRFinalApprovalView.as_view(), name='final_approval'),
 
     path('<int:pk>/download-pdf/', DownloadLeavePDFView.as_view(), name='download_pdf'),
+
+    path('types/create/', LeaveTypeCreateView.as_view(), name='leave_type_create'),
+    path('types/<int:pk>/', LeaveTypeDetailView.as_view(), name='leave_type_detail'),
+    path('holidays/create/', PublicHolidayCreateView.as_view(), name='holiday_create'),
+    path('holidays/<int:pk>/', PublicHolidayDetailView.as_view(), name='holiday_detail'),
+
+    path('types/<int:pk>/', LeaveTypeDetailView.as_view(), name='leave_type_detail'),
+    path('holidays/<int:pk>/', PublicHolidayDetailView.as_view(), name='holiday_detail'),
 ]

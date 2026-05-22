@@ -9,12 +9,18 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 from .serializers import (
     LoginSerializer, RegisterEmployeeSerializer, EmployeeSerializer,
     ChangePasswordSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 )
 from .permissions import IsAdmin, IsHROfficer
 from .tokens import password_reset_token
+
+from rest_framework import generics
+from .models import Department
+from .serializers import DepartmentSerializer
+from .permissions import IsAdmin
 
 Employee = get_user_model()
 
@@ -177,3 +183,13 @@ class EmployeeDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmployeeSerializer
     permission_classes = [IsHROfficer]
     queryset = Employee.objects.all()
+
+class DepartmentListCreateView(generics.ListCreateAPIView):
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAdmin]
+    queryset = Department.objects.all()
+
+class DepartmentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAdmin]
+    queryset = Department.objects.all()
