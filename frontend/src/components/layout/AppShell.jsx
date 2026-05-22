@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, History, Bell,
   Users, CheckSquare, Calendar, FileCheck,
-  BarChart2, LogOut, Menu, X
+  BarChart2, LogOut, Menu, X, Settings
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import api from '../../lib/axios'
