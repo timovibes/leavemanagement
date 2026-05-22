@@ -122,6 +122,21 @@ class SupervisorReviewView(APIView):
                     remarks=remarks
                 )
 
+                # Notify HR officers directly (in-app)
+                from accounts.models import Employee
+                hr_officers = Employee.objects.filter(
+                    role__in=['HR_OFFICER', 'HEAD_HR']
+                )
+                for hr in hr_officers:
+                    create_notification(
+                        user=hr,
+                        message=(
+                            f'{leave_request.employee.name} — '
+                            f'{leave_request.leave_type.name} request '
+                            f'approved by supervisor. Needs HR review.'
+                        )
+                    )
+
                 create_notification(
                     user=leave_request.employee,
                     message=(
