@@ -25,6 +25,8 @@ export const useEmployees = (filters = {}) => {
   const params = new URLSearchParams()
   if (filters.department) params.append('department', filters.department)
   if (filters.role)       params.append('role', filters.role)
+  params.append('page_size', 1000)   // ✅ fetch all employees, not just first 20
+
   return useQuery({
     queryKey: ['employees', filters],
     queryFn: () => api.get(`/auth/employees/?${params}`).then(r => toArray(r.data)),

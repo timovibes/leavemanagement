@@ -99,6 +99,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.Employee'
 
 # DRF
+# DRF
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -107,7 +108,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE': 20,          # keep for leave lists etc.
+    'PAGE_SIZE_QUERY_PARAM': 'page_size',   # ✅ allow ?page_size= override
+    'MAX_PAGE_SIZE': 1000,                  # ✅ safety cap
 }
 
 # JWT
