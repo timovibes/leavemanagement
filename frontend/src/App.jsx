@@ -59,7 +59,7 @@ const DashboardRedirect = () => {
   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
   if (user?.role === 'HR_OFFICER') return <HRDashboard />
   if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
-  if (user?.role === 'ADMIN')      return <HeadHRDashboard />
+  if (user?.role === 'ADMIN')      return <AdminDashboard />
   return <Dashboard />
 }
 
