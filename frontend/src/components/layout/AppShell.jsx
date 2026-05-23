@@ -32,12 +32,19 @@ const navByRole = {
     { to: '/head-hr/reports',  label: 'Reports',         icon: BarChart2 },
     { to: '/hr/employees',     label: 'Employees',       icon: Users },
   ],
+  // ADMIN: [
+  // { to: '/dashboard',       label: 'Dashboard',       icon: LayoutDashboard },
+  // { to: '/admin/settings',  label: 'System Settings', icon: Settings },
+  // { to: '/hr/employees',    label: 'Employees',        icon: Users },
+  // { to: '/hr/pending',      label: 'HR Queue',         icon: FileCheck },
+  // { to: '/head-hr/pending', label: 'Final Approvals',  icon: CheckSquare },
+  // { to: '/head-hr/reports', label: 'Reports',          icon: BarChart2 },
+
   ADMIN: [
-  { to: '/dashboard',       label: 'Dashboard',       icon: LayoutDashboard },
+  { to: '/dashboard',       label: 'Dashboard',      icon: LayoutDashboard },
   { to: '/admin/settings',  label: 'System Settings', icon: Settings },
   { to: '/hr/employees',    label: 'Employees',        icon: Users },
   { to: '/hr/pending',      label: 'HR Queue',         icon: FileCheck },
-  { to: '/head-hr/pending', label: 'Final Approvals',  icon: CheckSquare },
   { to: '/head-hr/reports', label: 'Reports',          icon: BarChart2 },
 ],
 }

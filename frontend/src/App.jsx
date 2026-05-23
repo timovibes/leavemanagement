@@ -37,6 +37,8 @@ import useAuthStore from './store/authStore'
 
 import AdminDashboard from './pages/admin/AdminDashboard'
 
+import AdminOverview from './pages/admin/AdminOverview'
+
 const Placeholder = ({ title }) => (
   <div className="page-container">
     <div className="card mt-6">
@@ -54,12 +56,21 @@ const ROLES = {
 }
 
 //Moved OUTSIDE the component return
+// const DashboardRedirect = () => {
+//   const { user } = useAuthStore()
+//   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
+//   if (user?.role === 'HR_OFFICER') return <HRDashboard />
+//   if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
+//   if (user?.role === 'ADMIN')      return <AdminDashboard />
+//   return <Dashboard />
+// }
+
 const DashboardRedirect = () => {
   const { user } = useAuthStore()
   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
   if (user?.role === 'HR_OFFICER') return <HRDashboard />
   if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
-  if (user?.role === 'ADMIN')      return <AdminDashboard />
+  if (user?.role === 'ADMIN')      return <AdminOverview />
   return <Dashboard />
 }
 
