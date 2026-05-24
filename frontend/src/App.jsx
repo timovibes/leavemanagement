@@ -5,48 +5,25 @@ import queryClient from './lib/queryClient'
 import ProtectedRoute from './components/ProtectedRoute'
 import AppShell from './components/layout/AppShell'
 import Unauthorized from './pages/Unauthorized'
-
-// Auth
 import Login from './pages/auth/Login'
 import ForgotPassword from './pages/auth/ForgotPassword'
-
-// Employee
 import Dashboard from './pages/employee/Dashboard'
 import ApplyLeave from './pages/employee/ApplyLeave'
 import MyLeaves from './pages/employee/MyLeaves'
 import LeaveDetail from './pages/employee/LeaveDetail'
 import Profile from './pages/employee/Profile'
 import Notifications from './pages/employee/Notifications'
-
-// Supervisor
 import SupervisorDashboard from './pages/supervisor/SupervisorDashboard'
 import PendingApprovals from './pages/supervisor/PendingApprovals'
 import TeamCalendar from './pages/supervisor/TeamCalendar'
-
-// HR
 import HRDashboard from './pages/hr/HRDashboard'
 import HRQueue from './pages/hr/HRQueue'
 import EmployeeManagement from './pages/hr/EmployeeManagement'
-
-// Head HR
 import HeadHRDashboard from './pages/headhr/HeadHRDashboard'
 import FinalApprovals from './pages/headhr/FinalApprovals'
 import Reports from './pages/headhr/Reports'
-
-import useAuthStore from './store/authStore'
-
 import AdminDashboard from './pages/admin/AdminDashboard'
-
-import AdminOverview from './pages/admin/AdminOverview'
-
-const Placeholder = ({ title }) => (
-  <div className="page-container">
-    <div className="card mt-6">
-      <h2 className="text-kfs-green">{title}</h2>
-      <p className="text-gray-400 mt-1 text-sm">Coming soon...</p>
-    </div>
-  </div>
-)
+import useAuthStore from './store/authStore'
 
 const ROLES = {
   ALL:     ['EMPLOYEE', 'SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
@@ -55,22 +32,12 @@ const ROLES = {
   SUP_UP:  ['SUPERVISOR', 'HR_OFFICER', 'HEAD_HR', 'ADMIN'],
 }
 
-//Moved OUTSIDE the component return
-// const DashboardRedirect = () => {
-//   const { user } = useAuthStore()
-//   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
-//   if (user?.role === 'HR_OFFICER') return <HRDashboard />
-//   if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
-//   if (user?.role === 'ADMIN')      return <AdminDashboard />
-//   return <Dashboard />
-// }
-
 const DashboardRedirect = () => {
   const { user } = useAuthStore()
   if (user?.role === 'SUPERVISOR') return <SupervisorDashboard />
   if (user?.role === 'HR_OFFICER') return <HRDashboard />
   if (user?.role === 'HEAD_HR')    return <HeadHRDashboard />
-  if (user?.role === 'ADMIN')      return <AdminOverview />
+  if (user?.role === 'ADMIN')      return <AdminDashboard />
   return <Dashboard />
 }
 
@@ -87,13 +54,11 @@ export default function App() {
           }}
         />
         <Routes>
-          {/* Public */}
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* All roles */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.ALL} />}>
             <Route element={<AppShell />}>
               <Route path="/dashboard"     element={<DashboardRedirect />} />
@@ -102,11 +67,9 @@ export default function App() {
               <Route path="/my-leaves/:id" element={<LeaveDetail />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/profile"       element={<Profile />} />
-              <Route path="/admin/settings" element={<AdminDashboard />} />
             </Route>
           </Route>
 
-          {/* Supervisor+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.SUP_UP} />}>
             <Route element={<AppShell />}>
               <Route path="/supervisor/pending"  element={<PendingApprovals />} />
@@ -114,15 +77,13 @@ export default function App() {
             </Route>
           </Route>
 
-          {/* HR+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.HR_UP} />}>
             <Route element={<AppShell />}>
-              <Route path="/hr/pending"       element={<HRQueue />} />
-              <Route path="/hr/employees"   element={<EmployeeManagement />} />
+              <Route path="/hr/pending"   element={<HRQueue />} />
+              <Route path="/hr/employees" element={<EmployeeManagement />} />
             </Route>
           </Route>
 
-          {/* Head HR+ */}
           <Route element={<ProtectedRoute allowedRoles={ROLES.HEAD_UP} />}>
             <Route element={<AppShell />}>
               <Route path="/head-hr/pending" element={<FinalApprovals />} />

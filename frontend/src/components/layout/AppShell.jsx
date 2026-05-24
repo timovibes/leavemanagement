@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, History, Bell,
   Users, CheckSquare, Calendar, FileCheck,
-  BarChart2, LogOut, Menu, X, Settings
+  BarChart2, LogOut, Menu, X
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import api from '../../lib/axios'
@@ -27,35 +27,24 @@ const navByRole = {
     { to: '/hr/employees', label: 'Employees', icon: Users },
   ],
   HEAD_HR: [
-    { to: '/dashboard',        label: 'Dashboard',       icon: LayoutDashboard },
-    { to: '/head-hr/pending',  label: 'Final Approvals', icon: CheckSquare },
-    { to: '/head-hr/reports',  label: 'Reports',         icon: BarChart2 },
-    { to: '/hr/employees',     label: 'Employees',       icon: Users },
+    { to: '/dashboard',       label: 'Dashboard',       icon: LayoutDashboard },
+    { to: '/head-hr/pending', label: 'Final Approvals', icon: CheckSquare },
+    { to: '/head-hr/reports', label: 'Reports',         icon: BarChart2 },
+    { to: '/hr/employees',    label: 'Employees',       icon: Users },
   ],
-  // ADMIN: [
-  // { to: '/dashboard',       label: 'Dashboard',       icon: LayoutDashboard },
-  // { to: '/admin/settings',  label: 'System Settings', icon: Settings },
-  // { to: '/hr/employees',    label: 'Employees',        icon: Users },
-  // { to: '/hr/pending',      label: 'HR Queue',         icon: FileCheck },
-  // { to: '/head-hr/pending', label: 'Final Approvals',  icon: CheckSquare },
-  // { to: '/head-hr/reports', label: 'Reports',          icon: BarChart2 },
-
   ADMIN: [
-  { to: '/dashboard',       label: 'Dashboard',      icon: LayoutDashboard },
-  { to: '/admin/settings',  label: 'System Settings', icon: Settings },
-  { to: '/hr/employees',    label: 'Employees',        icon: Users },
-  { to: '/hr/pending',      label: 'HR Queue',         icon: FileCheck },
-  { to: '/head-hr/reports', label: 'Reports',          icon: BarChart2 },
-],
+    { to: '/dashboard',       label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/hr/employees',    label: 'Employees',  icon: Users },
+    { to: '/hr/pending',      label: 'HR Queue',   icon: FileCheck },
+    { to: '/head-hr/reports', label: 'Reports',    icon: BarChart2 },
+  ],
 }
 
 export default function AppShell() {
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
   const { data: unread = 0 } = useUnreadCount()
-
   const navItems = navByRole[user?.role] || navByRole.EMPLOYEE
 
   const handleLogout = async () => {
@@ -69,7 +58,6 @@ export default function AppShell() {
 
   const Sidebar = () => (
     <div className="flex flex-col h-full">
-      {/* Logo */}
       <div className="px-4 py-5 border-b border-kfs-dark">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-kfs-light rounded-lg flex items-center
@@ -83,7 +71,6 @@ export default function AppShell() {
         </div>
       </div>
 
-      {/* Nav links */}
       <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
@@ -105,7 +92,6 @@ export default function AppShell() {
         ))}
       </nav>
 
-      {/* User info + logout */}
       <div className="border-t border-kfs-dark p-4">
         <div className="mb-3">
           <div className="flex items-center justify-between">
@@ -117,7 +103,6 @@ export default function AppShell() {
                 {user?.role?.replace('_', ' ')}
               </span>
             </div>
-            {/* Bell icon for desktop */}
             <NavLink to="/notifications" className="relative shrink-0 ml-2">
               <Bell size={20} className="text-green-300 hover:text-white transition-colors" />
               {unread > 0 && (
@@ -144,13 +129,11 @@ export default function AppShell() {
 
   return (
     <div className="min-h-screen flex bg-gray-50">
-      {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-60 bg-kfs-green
                         fixed inset-y-0 left-0 z-30">
         <Sidebar />
       </aside>
 
-      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 flex md:hidden">
           <div
@@ -169,9 +152,7 @@ export default function AppShell() {
         </div>
       )}
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col md:ml-60">
-        {/* Mobile top bar */}
         <header className="md:hidden bg-kfs-green text-white px-4 py-3
                            flex items-center justify-between sticky top-0 z-20">
           <button onClick={() => setSidebarOpen(true)}>
@@ -190,7 +171,6 @@ export default function AppShell() {
           </NavLink>
         </header>
 
-        {/* Page content */}
         <main className="flex-1 overflow-auto">
           <Outlet />
         </main>
