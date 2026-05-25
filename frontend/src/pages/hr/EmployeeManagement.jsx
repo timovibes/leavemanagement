@@ -460,9 +460,10 @@ export default function EmployeeManagement() {
   const employees = employeesData?.results || employeesData || []
 
   const filtered = employees.filter(e =>
+    e.role !== 'ADMIN' && (
     e.name?.toLowerCase().includes(search.toLowerCase()) ||
     e.email?.toLowerCase().includes(search.toLowerCase()) ||
-    e.personal_number?.includes(search)
+    e.personal_number?.includes(search))
   )
 
   return (

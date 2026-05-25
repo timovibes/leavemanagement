@@ -129,10 +129,11 @@ export default function HeadHREmployees() {
   const [roleFilter, setRoleFilter] = useState('')
   const { data: employeesData, isLoading } = useEmployees({ role: roleFilter })
   const employees = employeesData?.results || employeesData || []
-  const filtered  = employees.filter(e =>
+  const filtered = employees.filter(e =>
+    e.role !== 'ADMIN' && (
     e.name?.toLowerCase().includes(search.toLowerCase()) ||
     e.email?.toLowerCase().includes(search.toLowerCase()) ||
-    e.personal_number?.includes(search)
+    e.personal_number?.includes(search))
   )
   return (
     <div className="page-container">
