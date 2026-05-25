@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, History, Bell,
   Users, CheckSquare, Calendar, FileCheck,
-  BarChart2, LogOut, Menu, X
+  BarChart2, LogOut, Menu, X, Settings
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import api from '../../services/axios'
@@ -27,16 +27,16 @@ const navByRole = {
     { to: '/hr/employees', label: 'Employees', icon: Users },
   ],
   HEAD_HR: [
-    { to: '/dashboard',       label: 'Dashboard',       icon: LayoutDashboard },
-    { to: '/head-hr/pending', label: 'Final Approvals', icon: CheckSquare },
-    { to: '/head-hr/reports', label: 'Reports',         icon: BarChart2 },
-    { to: '/hr/employees',    label: 'Employees',       icon: Users },
+    { to: '/dashboard',         label: 'Dashboard',       icon: LayoutDashboard },
+    { to: '/head-hr/pending',   label: 'Final Approvals', icon: CheckSquare },
+    { to: '/head-hr/employees', label: 'Employees',       icon: Users },
+    { to: '/head-hr/reports',   label: 'Reports',         icon: BarChart2 },
   ],
   ADMIN: [
     { to: '/dashboard',       label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/hr/employees',    label: 'Employees',  icon: Users },
-    { to: '/hr/pending',      label: 'HR Queue',   icon: FileCheck },
-    { to: '/head-hr/reports', label: 'Reports',    icon: BarChart2 },
+    { to: '/admin/employees', label: 'Employees', icon: Users },
+    { to: '/admin/queue',     label: 'HR Queue',  icon: FileCheck },
+    { to: '/admin/settings',  label: 'Settings',  icon: Settings },
   ],
 }
 
