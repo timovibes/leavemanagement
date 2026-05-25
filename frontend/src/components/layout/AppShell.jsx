@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, History, Bell,
   Users, CheckSquare, Calendar, FileCheck,
-  BarChart2, LogOut, Menu, X, Settings
+  BarChart2, LogOut, Menu, X
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import api from '../../services/axios'
@@ -36,7 +36,7 @@ const navByRole = {
     { to: '/dashboard',       label: 'Dashboard', icon: LayoutDashboard },
     { to: '/admin/employees', label: 'Employees', icon: Users },
     { to: '/admin/queue',     label: 'HR Queue',  icon: FileCheck },
-    { to: '/admin/settings',  label: 'Settings',  icon: Settings },
+    { to: '/admin/settings',  label: 'Reports',  icon: BarChart2 },
   ],
 }
 
