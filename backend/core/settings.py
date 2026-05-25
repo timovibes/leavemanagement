@@ -122,11 +122,20 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+# # CORS
+# CORS_ALLOWED_ORIGINS = [
+#     config('FRONTEND_URL', default='http://localhost:5174'),
+# ]
+# CORS_ALLOW_CREDENTIALS = True
+
 # CORS
 CORS_ALLOWED_ORIGINS = [
-    config('FRONTEND_URL', default='http://localhost:5173'),
+    'http://localhost:5174',
+    'http://localhost:5173',
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

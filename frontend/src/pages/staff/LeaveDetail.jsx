@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Download, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { useLeaveDetail } from '../../hooks/useLeaves'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 
 const partLabels = {
   II: 'Supervisor Review',

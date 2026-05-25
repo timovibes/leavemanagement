@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { ChevronLeft, ChevronRight, Users } from 'lucide-react'
 import { useTeamLeaves } from '../../hooks/useSupervisor'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONTHS = [

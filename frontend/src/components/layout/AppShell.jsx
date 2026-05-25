@@ -6,7 +6,7 @@ import {
   BarChart2, LogOut, Menu, X
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
-import api from '../../lib/axios'
+import api from '../../services/axios'
 import toast from 'react-hot-toast'
 import { useUnreadCount } from '../../hooks/useNotifications'
 

@@ -6,7 +6,7 @@ import {
 import useAuthStore from '../../store/authStore'
 import { usePendingHeadHR } from '../../hooks/useHeadHR'
 import { useAllLeaves } from '../../hooks/useHR'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 
 const currentYear = new Date().getFullYear()
 

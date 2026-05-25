@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import { usePendingHR, useAllLeaves } from '../../hooks/useHR'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 
 const currentYear = new Date().getFullYear()
 

@@ -7,7 +7,7 @@ import {
 import useAuthStore from '../../store/authStore'
 import { useLeaveBalances, useMyLeaves } from '../../hooks/useLeaves'
 import { useUnreadCount } from '../../hooks/useNotifications'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 
 const currentYear = new Date().getFullYear()
 

@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { Loader2, Upload, X, Info, CalendarDays } from 'lucide-react'
 import { useLeaveTypes, useApplyLeave, useCalculateDays, useLeaveBalances } from '../../hooks/useLeaves'
 import useAuthStore from '../../store/authStore'
-import api from '../../lib/axios'
+import api from '../../services/axios'
 
 const currentYear = new Date().getFullYear()
 

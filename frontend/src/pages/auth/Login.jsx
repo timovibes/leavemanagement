@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
-import api from '../../lib/axios'
+import api from '../../services/axios'
 import useAuthStore from '../../store/authStore'
 
 export default function Login() {

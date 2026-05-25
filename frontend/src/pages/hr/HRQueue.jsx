@@ -8,7 +8,7 @@ import {
   usePendingHR, useHRReview,
   useHRAllowance, useHRVerify
 } from '../../hooks/useHR'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 import { useLeaveDetail } from '../../hooks/useLeaves'
 
 

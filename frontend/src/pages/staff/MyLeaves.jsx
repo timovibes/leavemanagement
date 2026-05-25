@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FileText, Download, Trash2, Send, ChevronRight, Filter } from 'lucide-react'
 import { useMyLeaves, useLeaveTypes, useSubmitLeave, useDeleteLeave } from '../../hooks/useLeaves'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 import toast from 'react-hot-toast'
 
 const currentYear = new Date().getFullYear()

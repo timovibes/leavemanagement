@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { useEmployees, useCreateEmployee, useUpdateEmployee, useDepartments } from '../../hooks/useHR'
 import { useLeaveTypes } from '../../hooks/useLeaves'
-import api from '../../lib/axios'
+import api from '../../services/axios'
 import toast from 'react-hot-toast'
 
 const ROLES = [

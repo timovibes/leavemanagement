@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import api from '../../lib/axios'
+import api from '../../services/axios'
 
 export default function ForgotPassword() {
   const [loading, setLoading] = useState(false)

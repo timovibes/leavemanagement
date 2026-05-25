@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import api from '../lib/axios'
+import api from '../services/axios'
 import useAuthStore from '../store/authStore'
 import toast from 'react-hot-toast'
 

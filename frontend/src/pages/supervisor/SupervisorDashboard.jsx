@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { CheckSquare, Calendar, Clock, Users, ChevronRight } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 import { usePendingSupervisor, useTeamLeaves } from '../../hooks/useSupervisor'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 
 export default function SupervisorDashboard() {
   const { user } = useAuthStore()

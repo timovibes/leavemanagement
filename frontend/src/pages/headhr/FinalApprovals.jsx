@@ -5,7 +5,7 @@ import {
   ChevronUp, Loader2, Download, Shield
 } from 'lucide-react'
 import { usePendingHeadHR, useHeadHRApproval } from '../../hooks/useHeadHR'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 
 
 // ── Final Approval Modal ─────────────────────

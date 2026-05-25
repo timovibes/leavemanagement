@@ -4,7 +4,7 @@ import {
   ChevronUp, User, Calendar, Phone, MapPin, Loader2
 } from 'lucide-react'
 import { usePendingSupervisor, useSupervisorReview } from '../../hooks/useSupervisor'
-import StatusBadge from '../../components/StatusBadge'
+import StatusBadge from '../../components/ui/StatusBadge'
 import { useForm } from 'react-hook-form'
 
 function ReviewModal({ leave, onClose }) {
