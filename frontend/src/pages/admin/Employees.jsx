@@ -138,6 +138,7 @@ export default function AdminEmployees() {
   const [showCreate, setShowCreate] = useState(false)
   const { data: employeesData, isLoading } = useEmployees({ role: roleFilter })
   const employees = employeesData?.results || employeesData || []
+  const totalEmployees = employeesData?.count ?? employees.length
   const filtered  = employees.filter(e =>
     e.name?.toLowerCase().includes(search.toLowerCase()) ||
     e.email?.toLowerCase().includes(search.toLowerCase()) ||
@@ -146,7 +147,7 @@ export default function AdminEmployees() {
   return (
     <div className="page-container">
       <div className="flex items-center justify-between mt-2 mb-5">
-        <div><h1 className="text-kfs-dark">Employees</h1><p className="text-gray-500 text-sm">{employees.length} staff member{employees.length !== 1 ? 's' : ''}</p></div>
+        <div><h1 className="text-kfs-dark">Employees</h1><p className="text-gray-500 text-sm">{totalEmployees} staff member{totalEmployees !== 1 ? 's' : ''}</p></div>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 btn-primary w-auto px-4 py-2 text-sm"><Plus size={16} /> Add Employee</button>
       </div>
       <div className="flex gap-2 mb-4">

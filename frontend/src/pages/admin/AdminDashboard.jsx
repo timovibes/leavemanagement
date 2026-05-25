@@ -1332,6 +1332,7 @@ export default function AdminDashboard() {
   const { data: allData }        = useAllLeaves({ year: String(currentYear) })
 
   const employees  = employeesData?.results  || employeesData  || []
+  const totalEmployees  = employeesData?.count ?? employees.length
   const leaveTypes = leaveTypesData?.results || leaveTypesData || []
   const holidays   = holidaysData?.results   || holidaysData   || []
   const all        = allData?.results        || allData        || []
@@ -1361,7 +1362,7 @@ export default function AdminDashboard() {
       <h3 className="section-title">System Overview</h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Total Employees', value: employees.length,  icon: Users,     color: 'text-kfs-green',  bg: 'bg-kfs-accent' },
+          { label: 'Total Employees', value: totalEmployees,  icon: Users,     color: 'text-kfs-green',  bg: 'bg-kfs-accent' },
           { label: 'Leave Types',     value: leaveTypes.length, icon: BookOpen,  color: 'text-blue-600',   bg: 'bg-blue-50' },
           { label: 'Public Holidays', value: holidays.length,   icon: Calendar,  color: 'text-purple-600', bg: 'bg-purple-50' },
           { label: `Applications ${currentYear}`, value: all.length, icon: FileText, color: 'text-orange-600', bg: 'bg-orange-50' },

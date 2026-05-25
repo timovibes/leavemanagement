@@ -458,6 +458,7 @@ export default function EmployeeManagement() {
   const { data: leaveTypes = [] } = useLeaveTypes()
 
   const employees = employeesData?.results || employeesData || []
+  const totalEmployees = employeesData?.count ?? employees.length 
 
   const filtered = employees.filter(e =>
     e.role !== 'ADMIN' && (
@@ -472,7 +473,7 @@ export default function EmployeeManagement() {
         <div>
           <h1 className="text-kfs-dark">Employees</h1>
           <p className="text-gray-500 text-sm">
-            {employees.length} staff member{employees.length !== 1 ? 's' : ''}
+            {totalEmployees} staff member{totalEmployees !== 1 ? 's' : ''}
           </p>
         </div>
         <button

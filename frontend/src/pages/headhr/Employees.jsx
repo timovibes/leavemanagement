@@ -129,6 +129,7 @@ export default function HeadHREmployees() {
   const [roleFilter, setRoleFilter] = useState('')
   const { data: employeesData, isLoading } = useEmployees({ role: roleFilter })
   const employees = employeesData?.results || employeesData || []
+  const totalEmployees = employeesData?.count ?? employees.length
   const filtered = employees.filter(e =>
     e.role !== 'ADMIN' && (
     e.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -139,7 +140,7 @@ export default function HeadHREmployees() {
     <div className="page-container">
       <div className="mt-2 mb-5">
         <h1 className="text-kfs-dark">Employees</h1>
-        <p className="text-gray-500 text-sm">{employees.length} staff member{employees.length !== 1 ? 's' : ''}</p>
+        <p className="text-gray-500 text-sm">{totalEmployees} staff member{totalEmployees !== 1 ? 's' : ''}</p>
       </div>
       <div className="flex gap-2 mb-4">
         <div className="relative flex-1">

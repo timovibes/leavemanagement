@@ -29,7 +29,7 @@ export const useEmployees = (filters = {}) => {
 
   return useQuery({
     queryKey: ['employees', filters],
-    queryFn: () => api.get(`/auth/employees/?${params}`).then(r => toArray(r.data)),
+    queryFn: () => api.get(`/auth/employees/?${params}`).then(r => r.data),
   })
 }
 
