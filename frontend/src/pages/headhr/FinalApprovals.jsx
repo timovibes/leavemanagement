@@ -74,6 +74,18 @@ function FinalApprovalModal({ leave, onClose }) {
                 <span className="font-medium text-gray-800">{value}</span>
               </div>
             ))}
+
+            {/* Supporting document */}
+            {leave.attachment && (
+              <a
+                href={`${import.meta.env.VITE_API_BASE_URL}${leave.attachment}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-xs text-blue-600 hover:underline pt-1"
+              >
+                <Download size={12} /> View Supporting Document
+              </a>
+            )}
           </div>
 
           {/* Approval trail so far */}

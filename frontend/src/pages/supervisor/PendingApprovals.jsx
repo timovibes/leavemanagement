@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   CheckCircle, XCircle, Clock, ChevronDown,
-  ChevronUp, User, Calendar, Phone, MapPin, Loader2
+  ChevronUp, User, Calendar, Phone, MapPin, Loader2, Download
 } from 'lucide-react'
 import { usePendingSupervisor, useSupervisorReview } from '../../hooks/useSupervisor'
 import StatusBadge from '../../components/ui/StatusBadge'
@@ -80,6 +80,16 @@ function ReviewModal({ leave, onClose }) {
                 <User size={12} />
                 Acting: {leave.acting_officer_name}
               </div>
+            )}
+            {/* Supporting document */}
+            {leave.attachment && (
+              <a href={`${import.meta.env.VITE_API_BASE_URL}${leave.attachment}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-xs text-blue-600 hover:underline mt-1"
+              >
+                <Download size={12} /> View Supporting Document
+              </a>
             )}
           </div>
 
