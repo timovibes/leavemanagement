@@ -179,8 +179,7 @@ function PartIVModal({ leave, onClose }) {
   const hrAllowance = useHRAllowance()
   const { register, handleSubmit } = useForm()
 
-  const approvedDays =
-    leave.supervisor_recommended_days || leave.days_requested
+  const approvedDays = leave.supervisor_recommended_days || leave.days_requested
   const dailyRate = leave.employee_salary_band
     ? (parseFloat(leave.employee_salary_band) / 30).toFixed(2)
     : '—'
@@ -216,30 +215,55 @@ function PartIVModal({ leave, onClose }) {
         </div>
 
         <div className="px-5 py-4 space-y-4">
-          {/* Calculation breakdown */}
-          <div className="bg-blue-50 rounded-xl p-4 space-y-2 text-sm">
-            <p className="font-semibold text-blue-800 mb-2">
-              Auto-Calculation Breakdown
-            </p>
-            {[
-              ['Approved Days', approvedDays],
-              ['Daily Rate (KSh)', dailyRate],
-              ['Calculated Allowance (KSh)', calculated],
-            ].map(([label, value]) => (
-              <div key={label} className="flex justify-between">
-                <span className="text-blue-700">{label}</span>
-                <span className="font-semibold text-blue-900">{value}</span>
-              </div>
-            ))}
+          {/* Leave summary */}
+          <div className="bg-kfs-muted rounded-xl p-3 text-sm space-y-1">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Employee</span>
+              <span className="font-medium">{leave.employee_name}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Leave Type</span>
+              <span className="font-medium">{leave.leave_type_name}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Period</span>
+              <span className="font-medium">{leave.from_date} → {leave.to_date}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Approved Days</span>
+              <span className="font-medium text-kfs-green">{approvedDays}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Daily Rate (KSh)</span>
+              <span className="font-medium">{dailyRate}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Calculated Allowance (KSh)</span>
+              <span className="font-medium text-blue-700">{calculated}</span>
+            </div>
+            {leave.attachment && (
+              <a
+                href={`${import.meta.env.VITE_MEDIA_BASE_URL}${leave.attachment}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-xs text-blue-600 hover:underline pt-1"
+              >
+                <Download size={12} /> View Supporting Document
+              </a>
+            )}
+          </div>
+
+          <div className="flex items-start gap-2 text-xs text-blue-700
+                          bg-blue-50 px-3 py-2 rounded-lg">
+            <Info size={13} className="mt-0.5 shrink-0" />
+            Leave blank to use the calculated value — override only if necessary.
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Override Allowance (KSh)
-                <span className="text-gray-400 font-normal ml-1">
-                  (leave blank to use calculated)
-                </span>
+                <span className="text-gray-400 font-normal ml-1">(override)</span>
               </label>
               <input
                 type="number"
@@ -255,16 +279,13 @@ function PartIVModal({ leave, onClose }) {
               </label>
               <textarea
                 rows={2}
+                placeholder="Optional remarks..."
                 className="input-field resize-none"
                 {...register('remarks')}
               />
             </div>
             <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="btn-secondary"
-              >
+              <button type="button" onClick={onClose} className="btn-secondary">
                 Cancel
               </button>
               <button
@@ -302,8 +323,10 @@ function PartVModal({ leave, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center
                     justify-center z-50 px-4 pb-4 sm:pb-0">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
-        <div className="px-5 pt-5 pb-3 border-b border-gray-100">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl
+                      max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white px-5 pt-5 pb-3
+                        border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Shield size={18} className="text-purple-600" />
@@ -316,31 +339,54 @@ function PartVModal({ leave, onClose }) {
         </div>
 
         <div className="px-5 py-4 space-y-4">
-          {/* Full summary */}
-          <div className="space-y-2 text-sm">
-            <p className="font-medium text-gray-700 mb-2">
-              Confirm all parts are correctly filled:
-            </p>
-            {[
-              ['Employee', leave.employee_name],
-              ['Leave Type', leave.leave_type_name],
-              ['Period', `${leave.from_date} → ${leave.to_date}`],
-              ['Days', leave.days_requested],
-              ['Entitlement', leave.leave_entitlement ?? '—'],
-              ['Balance Remaining', leave.balance_remaining ?? '—'],
-              ['Resume Date', leave.resume_date ?? '—'],
-              ['Allowance (KSh)',
-                leave.leave_allowance_ksh
+          {/* Leave summary */}
+          <div className="bg-kfs-muted rounded-xl p-3 text-sm space-y-1">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Employee</span>
+              <span className="font-medium">{leave.employee_name}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Leave Type</span>
+              <span className="font-medium">{leave.leave_type_name}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Period</span>
+              <span className="font-medium">{leave.from_date} → {leave.to_date}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Days</span>
+              <span className="font-medium text-kfs-green">{leave.days_requested}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Entitlement</span>
+              <span className="font-medium">{leave.leave_entitlement ?? '—'} days</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Balance Remaining</span>
+              <span className="font-medium">{leave.balance_remaining ?? '—'} days</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Resume Date</span>
+              <span className="font-medium">{leave.resume_date ?? '—'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Allowance (KSh)</span>
+              <span className="font-medium">
+                {leave.leave_allowance_ksh
                   ? Number(leave.leave_allowance_ksh).toLocaleString()
-                  : '—'
-              ],
-            ].map(([label, value]) => (
-              <div key={label}
-                className="flex justify-between py-1 border-b border-gray-50">
-                <span className="text-gray-500">{label}</span>
-                <span className="font-medium text-gray-800">{value}</span>
-              </div>
-            ))}
+                  : '—'}
+              </span>
+            </div>
+            {leave.attachment && (
+              <a
+                href={`${import.meta.env.VITE_MEDIA_BASE_URL}${leave.attachment}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-xs text-blue-600 hover:underline pt-1"
+              >
+                <Download size={12} /> View Supporting Document
+              </a>
+            )}
           </div>
 
           {!leave.leave_allowance_ksh && (
@@ -364,11 +410,7 @@ function PartVModal({ leave, onClose }) {
               />
             </div>
             <div className="flex gap-3 pt-1">
-              <button
-                type="button"
-                onClick={onClose}
-                className="btn-secondary"
-              >
+              <button type="button" onClick={onClose} className="btn-secondary">
                 Cancel
               </button>
               <button
