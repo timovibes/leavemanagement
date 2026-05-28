@@ -19,7 +19,7 @@ export const useTeamLeaves = () =>
 export const useTeamMembers = () =>
   useQuery({
     queryKey: ['team-members'],
-    queryFn: () => api.get('/accounts/employees/').then(r => toArray(r.data)),
+    queryFn: () => api.get('/auth/employees/').then(r => toArray(r.data)),
   })
 
 export const useSupervisorReview = () => {
