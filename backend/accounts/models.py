@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -76,3 +79,15 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.name} ({self.personal_number})"
+
+@receiver(post_save, sender=Employee)
+def sync_department_head(sender, instance, **kwargs):
+    if not instance.department:
+        return
+
+    if instance.role == 'SUPERVISOR':
+        # Set this employee as the department head
+            Department.objects.filter(pk=instance.department.pk).update(head=instance)
+    else:
+        # If they were the head but role changed, clear it
+            Department.objects.filter(pk=instance.department.pk, head=instance).update(head=None)
