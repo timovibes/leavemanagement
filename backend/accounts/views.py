@@ -184,10 +184,16 @@ class EmployeeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsHROfficer]
     queryset = Employee.objects.all()
 
+# accounts/views.py
+
 class DepartmentListCreateView(generics.ListCreateAPIView):
     serializer_class = DepartmentSerializer
-    permission_classes = [IsAdmin]
     queryset = Department.objects.all()
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsHROfficer()]  # HEAD_HR, HR_OFFICER, ADMIN can read
+        return [IsAdmin()]          # only ADMIN can create
 
 class DepartmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DepartmentSerializer
