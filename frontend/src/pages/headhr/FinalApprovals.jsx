@@ -78,7 +78,7 @@ function FinalApprovalModal({ leave, onClose }) {
             {/* Supporting document */}
             {leave.attachment && (
               <a
-                href={`${import.meta.env.VITE_API_BASE_URL}${leave.attachment}`}
+                href={`${import.meta.env.VITE_MEDIA_BASE_URL}${leave.attachment}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 text-xs text-blue-600 hover:underline pt-1"
