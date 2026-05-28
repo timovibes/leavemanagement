@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   ChevronDown, ChevronUp, CheckCircle,
-  Calculator, Shield, Loader2, Info
+  Calculator, Shield, Loader2, Info, Download
 } from 'lucide-react'
 import {
   usePendingHR, useHRReview,
