@@ -16,6 +16,12 @@ export const useTeamLeaves = () =>
     queryFn: () => api.get('/leaves/team/').then(r => toArray(r.data)),
   })
 
+export const useTeamMembers = () =>
+  useQuery({
+    queryKey: ['team-members'],
+    queryFn: () => api.get('/accounts/employees/').then(r => toArray(r.data)),
+  })
+
 export const useSupervisorReview = () => {
   const qc = useQueryClient()
   return useMutation({

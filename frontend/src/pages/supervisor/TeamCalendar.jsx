@@ -1,18 +1,20 @@
 import { useState, useMemo } from 'react'
-import { ChevronLeft, ChevronRight, Users } from 'lucide-react'
-import { useTeamLeaves } from '../../hooks/useSupervisor'
+import { ChevronLeft, ChevronRight, Users, CalendarCheck } from 'lucide-react'
+import { useTeamLeaves, useTeamMembers } from '../../hooks/useSupervisor'
 import StatusBadge from '../../components/ui/StatusBadge'
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONTHS = [
-  'January','February','March','April','May','June',
-  'July','August','September','October','November','December'
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
 ]
 
 const COLORS = [
   'bg-blue-400', 'bg-purple-400', 'bg-orange-400',
   'bg-pink-400', 'bg-teal-400', 'bg-indigo-400',
 ]
+
+// ─── helpers ───────────────────────────────────────────────────────────────
 
 function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate()
@@ -27,74 +29,151 @@ function isDateInRange(date, from, to) {
   return d >= new Date(from).getTime() && d <= new Date(to).getTime()
 }
 
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+  })
+}
+
+function getReturnDate(toDateStr) {
+  const d = new Date(toDateStr)
+  d.setDate(d.getDate() + 1)
+  if (d.getDay() === 6) d.setDate(d.getDate() + 2) // Sat → Mon
+  if (d.getDay() === 0) d.setDate(d.getDate() + 1) // Sun → Mon
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
+/** Initials from a full name — "John Mwangi" → "JM" */
+function initials(name) {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(n => n[0].toUpperCase())
+    .join('')
+}
+
+// ─── component ─────────────────────────────────────────────────────────────
+
 export default function TeamCalendar() {
   const today = new Date()
   const [viewYear, setViewYear] = useState(today.getFullYear())
   const [viewMonth, setViewMonth] = useState(today.getMonth())
   const [selectedDay, setSelectedDay] = useState(null)
 
-  const { data: teamLeaves = [], isLoading } = useTeamLeaves()
+  const { data: teamLeaves = [], isLoading: leavesLoading } = useTeamLeaves()
+  const { data: teamMembers = [], isLoading: membersLoading } = useTeamMembers()
 
-  const activeLeaves = useMemo(() =>
-    teamLeaves.filter(l =>
-      ['APPROVED', 'SUPERVISOR_REVIEW', 'HR_REVIEW', 'HR_CHECK'].includes(l.status)
-    ),
+  const isLoading = leavesLoading || membersLoading
+
+  const activeLeaves = useMemo(
+    () =>
+      teamLeaves.filter(l =>
+        ['APPROVED', 'SUPERVISOR_REVIEW', 'HR_REVIEW', 'HR_CHECK'].includes(l.status)
+      ),
     [teamLeaves]
   )
 
   const employeeColors = useMemo(() => {
     const map = {}
     const names = [...new Set(activeLeaves.map(l => l.employee_name))]
-    names.forEach((name, i) => { map[name] = COLORS[i % COLORS.length] })
+    names.forEach((name, i) => {
+      map[name] = COLORS[i % COLORS.length]
+    })
     return map
   }, [activeLeaves])
+
+  const sortedLeaves = useMemo(
+    () => [...teamLeaves].sort((a, b) => new Date(a.from_date) - new Date(b.from_date)),
+    [teamLeaves]
+  )
+
+  // Who is on active leave TODAY
+  const onLeaveToday = useMemo(() => {
+    return new Set(
+      activeLeaves
+        .filter(l => isDateInRange(today, l.from_date, l.to_date))
+        .map(l => l.employee_name)
+    )
+  }, [activeLeaves])
+
+  // Team members NOT on leave today
+  const availableToday = useMemo(() => {
+    return teamMembers.filter(m => !onLeaveToday.has(m.name))
+  }, [teamMembers, onLeaveToday])
 
   const daysInMonth = getDaysInMonth(viewYear, viewMonth)
   const firstDay = getFirstDayOfMonth(viewYear, viewMonth)
 
-  const prevMonth = () => {
+  const goToPrevMonth = () => {
     if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11) }
     else setViewMonth(m => m - 1)
   }
-  const nextMonth = () => {
+  const goToNextMonth = () => {
     if (viewMonth === 11) { setViewYear(y => y + 1); setViewMonth(0) }
     else setViewMonth(m => m + 1)
   }
+  const goToToday = () => {
+    setViewYear(today.getFullYear())
+    setViewMonth(today.getMonth())
+    setSelectedDay(null)
+  }
 
-  const getLeavesOnDay = (day) => {
+  const getLeavesOnDay = day => {
     const date = new Date(viewYear, viewMonth, day)
     return activeLeaves.filter(l => isDateInRange(date, l.from_date, l.to_date))
   }
+
+  const isViewingCurrentMonth =
+    viewYear === today.getFullYear() && viewMonth === today.getMonth()
 
   const selectedDayLeaves = selectedDay ? getLeavesOnDay(selectedDay) : []
 
   return (
     <div className="page-container">
+      {/* Header */}
       <div className="mt-2 mb-5">
         <h1 className="text-kfs-dark">Team Calendar</h1>
-        <p className="text-gray-500 text-sm">See who is on leave when</p>
+        <p className="text-gray-500 text-sm">See who is on leave and when they return</p>
       </div>
 
       {/* Calendar card */}
       <div className="card mb-4">
+        {/* Month navigation */}
         <div className="flex items-center justify-between mb-4">
           <button
-            onClick={prevMonth}
+            onClick={goToPrevMonth}
             className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
           >
             <ChevronLeft size={18} />
           </button>
-          <h2 className="text-base font-semibold text-kfs-dark">
-            {MONTHS[viewMonth]} {viewYear}
-          </h2>
+
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-semibold text-kfs-dark">
+              {MONTHS[viewMonth]} {viewYear}
+            </h2>
+            {!isViewingCurrentMonth && (
+              <button
+                onClick={goToToday}
+                className="text-xs text-kfs-green font-medium px-2 py-0.5
+                           border border-kfs-green rounded-full hover:bg-kfs-green
+                           hover:text-white transition-colors"
+              >
+                Today
+              </button>
+            )}
+          </div>
+
           <button
-            onClick={nextMonth}
+            onClick={goToNextMonth}
             className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
           >
             <ChevronRight size={18} />
           </button>
         </div>
 
+        {/* Day headers */}
         <div className="grid grid-cols-7 mb-1">
           {DAYS.map(d => (
             <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
@@ -103,6 +182,7 @@ export default function TeamCalendar() {
           ))}
         </div>
 
+        {/* Day cells */}
         <div className="grid grid-cols-7 gap-y-1">
           {Array.from({ length: firstDay }).map((_, i) => (
             <div key={`empty-${i}`} />
@@ -136,8 +216,7 @@ export default function TeamCalendar() {
                       <span
                         key={i}
                         className={`w-1.5 h-1.5 rounded-full ${
-                          isToday ? 'bg-white' :
-                          employeeColors[l.employee_name] || 'bg-gray-400'
+                          isToday ? 'bg-white' : employeeColors[l.employee_name] || 'bg-gray-400'
                         }`}
                       />
                     ))}
@@ -156,6 +235,49 @@ export default function TeamCalendar() {
         </div>
       </div>
 
+      {/* Available today strip */}
+      <div className="card mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="section-title mb-0">Available Today</h3>
+          {!isLoading && (
+            <span className="text-xs text-gray-400">
+              {availableToday.length} of {teamMembers.length}
+            </span>
+          )}
+        </div>
+
+        {isLoading ? (
+          <div className="flex gap-2">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="w-9 h-9 rounded-full bg-gray-200 animate-pulse" />
+            ))}
+          </div>
+        ) : availableToday.length === 0 ? (
+          <p className="text-gray-400 text-sm">Everyone is on leave today.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {availableToday.map(member => (
+              <div key={member.id} className="flex flex-col items-center gap-1">
+                <div className="relative">
+                  <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200
+                                  flex items-center justify-center text-xs font-semibold
+                                  text-gray-600">
+                    {initials(member.name)}
+                  </div>
+                  {/* green available dot */}
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400
+                                   rounded-full border-2 border-white" />
+                </div>
+                <span className="text-[10px] text-gray-500 max-w-[40px] text-center
+                                 leading-tight truncate">
+                  {member.name.split(' ')[0]}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Selected day detail */}
       {selectedDay && (
         <div className="card mb-4">
@@ -165,18 +287,28 @@ export default function TeamCalendar() {
           {selectedDayLeaves.length === 0 ? (
             <p className="text-gray-400 text-sm">No one on leave this day.</p>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {selectedDayLeaves.map(leave => (
-                <div key={leave.id} className="flex items-center gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full shrink-0
-                                   ${employeeColors[leave.employee_name]}`} />
+                <div key={leave.id} className="flex items-start gap-3">
+                  <div
+                    className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1
+                                 ${employeeColors[leave.employee_name]}`}
+                  />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-800">
                       {leave.employee_name}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {leave.leave_type_name} •{' '}
-                      {leave.from_date} → {leave.to_date}
+                      {leave.leave_type_name}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {formatDate(leave.from_date)} → {formatDate(leave.to_date)}
+                      {' · '}
+                      {leave.days_requested}d
+                    </p>
+                    <p className="text-xs text-kfs-green font-medium mt-0.5 flex items-center gap-1">
+                      <CalendarCheck size={11} />
+                      Returns {getReturnDate(leave.to_date)}
                     </p>
                   </div>
                   <StatusBadge status={leave.status} />
@@ -189,10 +321,10 @@ export default function TeamCalendar() {
 
       {/* Legend */}
       <div className="card mb-4">
-        <h3 className="section-title">Team Members</h3>
+        <h3 className="section-title">Team Members on Leave</h3>
         {isLoading ? (
           <div className="space-y-2">
-            {[1,2,3].map(i => (
+            {[1, 2, 3].map(i => (
               <div key={i} className="h-6 bg-gray-200 rounded animate-pulse" />
             ))}
           </div>
@@ -202,17 +334,31 @@ export default function TeamCalendar() {
             No active or upcoming leaves.
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {Object.entries(employeeColors).map(([name, color]) => {
               const empLeaves = activeLeaves.filter(l => l.employee_name === name)
+              const earliest = [...empLeaves].sort(
+                (a, b) => new Date(a.from_date) - new Date(b.from_date)
+              )[0]
               return (
-                <div key={name} className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full shrink-0 ${color}`} />
+                <div key={name} className="flex items-start gap-3">
+                  <div className={`w-3 h-3 rounded-full shrink-0 mt-0.5 ${color}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-800">{name}</p>
-                    <p className="text-xs text-gray-400">
-                      {empLeaves.length} active leave{empLeaves.length !== 1 ? 's' : ''}
-                    </p>
+                    {earliest && (
+                      <p className="text-xs text-gray-400">
+                        {formatDate(earliest.from_date)} → {formatDate(earliest.to_date)}
+                        {' · '}
+                        <span className="text-kfs-green font-medium">
+                          Returns {getReturnDate(earliest.to_date)}
+                        </span>
+                      </p>
+                    )}
+                    {empLeaves.length > 1 && (
+                      <p className="text-xs text-gray-400">
+                        +{empLeaves.length - 1} more leave{empLeaves.length - 1 !== 1 ? 's' : ''}
+                      </p>
+                    )}
                   </div>
                 </div>
               )
@@ -226,29 +372,38 @@ export default function TeamCalendar() {
         <h3 className="section-title">All Team Leaves</h3>
         {isLoading ? (
           <div className="space-y-2">
-            {[1,2,3].map(i => (
+            {[1, 2, 3].map(i => (
               <div key={i} className="h-16 rounded-xl bg-gray-200 animate-pulse" />
             ))}
           </div>
-        ) : teamLeaves.length === 0 ? (
+        ) : sortedLeaves.length === 0 ? (
           <div className="card text-center py-8">
             <Users size={32} className="mx-auto text-gray-300 mb-2" />
             <p className="text-gray-400 text-sm">No team leave records found.</p>
           </div>
         ) : (
           <div className="space-y-2">
-            {teamLeaves.map(leave => (
-              <div key={leave.id} className="card flex items-center gap-3">
-                <div className={`w-2.5 h-2.5 rounded-full shrink-0
-                                 ${employeeColors[leave.employee_name] || 'bg-gray-400'}`} />
+            {sortedLeaves.map(leave => (
+              <div key={leave.id} className="card flex items-start gap-3">
+                <div
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1
+                               ${employeeColors[leave.employee_name] || 'bg-gray-400'}`}
+                />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-800 text-sm">
                     {leave.employee_name}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {leave.leave_type_name} •{' '}
-                    {leave.from_date} → {leave.to_date} •{' '}
+                    {leave.leave_type_name}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {formatDate(leave.from_date)} → {formatDate(leave.to_date)}
+                    {' · '}
                     {leave.days_requested}d
+                  </p>
+                  <p className="text-xs text-kfs-green font-medium mt-0.5 flex items-center gap-1">
+                    <CalendarCheck size={11} />
+                    Returns {getReturnDate(leave.to_date)}
                   </p>
                 </div>
                 <StatusBadge status={leave.status} />
