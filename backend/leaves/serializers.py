@@ -92,7 +92,28 @@ class ApplyLeaveSerializer(serializers.ModelSerializer):
 
         # Date order check
         if from_date > to_date:
-            raise serializers.ValidationError('Start date must be before end date.')
+            raise serializers.ValidationError(
+                'Start date must be before end date.'
+            )
+
+        # Overlapping leave check
+        overlapping = LeaveRequest.objects.filter(
+            employee=user,
+            status__in=[
+                'DRAFT', 'SUBMITTED', 'SUPERVISOR_REVIEW',
+                'HR_REVIEW', 'HR_CHECK', 'APPROVED'
+            ],
+            from_date__lte=to_date,
+            to_date__gte=from_date
+        ).first()
+
+        if overlapping:
+            raise serializers.ValidationError(
+                f'You already have a {overlapping.leave_type.name} request '
+                f'running from {overlapping.from_date} to {overlapping.to_date}. '
+                f'An employee can only be on one leave at a time. '
+                f'Please wait for your current leave to end or be resolved before applying again.'
+            )
 
         # 14-day advance notice rule (except sick leave)
         is_sick = leave_type.name.lower() in ['sick leave', 'sick']
@@ -151,10 +172,10 @@ class ApplyLeaveSerializer(serializers.ModelSerializer):
 
     def validate_attachment(self, value):
         if value:
-            # Max 5MB
             if value.size > 5 * 1024 * 1024:
-                raise serializers.ValidationError('File size must not exceed 5MB.')
-            # Allowed types
+                raise serializers.ValidationError(
+                    'File size must not exceed 5MB.'
+                )
             allowed_types = ['application/pdf', 'image/jpeg', 'image/png']
             if value.content_type not in allowed_types:
                 raise serializers.ValidationError(
