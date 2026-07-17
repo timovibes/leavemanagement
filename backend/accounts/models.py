@@ -82,6 +82,9 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
 @receiver(post_save, sender=Employee)
 def sync_department_head(sender, instance, **kwargs):
+    if kwargs.get('raw', False):
+        return
+
     if not instance.department:
         return
 

@@ -24,4 +24,6 @@ dist/
 Thumbs.db
 
 # Logs
-*.log
+*.logbackend/datadump.json 
+
+backend/datadump.json
