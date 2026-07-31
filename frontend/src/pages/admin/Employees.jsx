@@ -20,8 +20,8 @@ function CreateModal({ onClose }) {
   const onSubmit = async (data) => { await create.mutateAsync(data); onClose() }
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:pb-0">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white px-5 pt-5 pb-3 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-white/90 backdrop-blur-md rounded-3xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md px-5 pt-5 pb-3 border-b border-gray-100 flex items-center justify-between">
           <h3 className="font-semibold text-gray-800">Create Employee</h3>
           <button onClick={onClose}><X size={18} className="text-gray-400" /></button>
         </div>
@@ -88,18 +88,18 @@ function EmployeeCard({ employee }) {
     <div className="card">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-10 h-10 rounded-full bg-kfs-green flex items-center justify-center text-white font-bold text-sm shrink-0">{employee.name?.charAt(0)}</div>
+          <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-sm shrink-0">{employee.name?.charAt(0)}</div>
           <div className="min-w-0">
             <p className="font-semibold text-gray-800 text-sm truncate">{employee.name}</p>
             <p className="text-xs text-gray-500 truncate">{employee.email}</p>
             <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              <span className="text-xs bg-kfs-accent text-kfs-green px-2 py-0.5 rounded-full">{employee.role?.replace('_', ' ')}</span>
+              <span className="text-xs bg-brand-accent text-brand px-2 py-0.5 rounded-full">{employee.role?.replace('_', ' ')}</span>
               {employee.grade && <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{employee.grade?.replace('_', ' ')}</span>}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <button onClick={() => { setEditing(true); setExpanded(true) }} className="p-2 text-kfs-green hover:bg-kfs-accent rounded-lg"><Edit2 size={15} /></button>
+          <button onClick={() => { setEditing(true); setExpanded(true) }} className="p-2 text-brand hover:bg-brand-accent rounded-lg"><Edit2 size={15} /></button>
           <button onClick={() => setExpanded(!expanded)} className="p-2 text-gray-400 hover:bg-gray-50 rounded-lg">{expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</button>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function AdminEmployees() {
   return (
     <div className="page-container">
       <div className="flex items-center justify-between mt-2 mb-5">
-        <div><h1 className="text-kfs-dark">Employees</h1><p className="text-gray-500 text-sm">{totalEmployees} staff member{totalEmployees !== 1 ? 's' : ''}</p></div>
+        <div><h1 className="text-brand-dark">Employees</h1><p className="text-gray-500 text-sm">{totalEmployees} staff member{totalEmployees !== 1 ? 's' : ''}</p></div>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 btn-primary w-auto px-4 py-2 text-sm"><Plus size={16} /> Add Employee</button>
       </div>
       <div className="flex gap-2 mb-4">
