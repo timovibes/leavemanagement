@@ -15,12 +15,12 @@ const currentYear = new Date().getFullYear()
 const years = [currentYear, currentYear - 1, currentYear - 2]
 
 const COLORS = [
-  '#2d6a4f', '#52b788', '#1b4332',
-  '#74c69d', '#40916c', '#95d5b2'
+  '#4f46e5', '#818cf8', '#3730a3',
+  '#a5b4fc', '#6366f1', '#c7d2fe'
 ]
 
 const STATUS_COLORS = {
-  APPROVED:  '#2d6a4f',
+  APPROVED:  '#4f46e5',
   REJECTED:  '#ef4444',
   PENDING:   '#f59e0b',
   DRAFT:     '#9ca3af',
@@ -31,7 +31,6 @@ export default function AdminReports() {
   const { data: allData, isLoading } = useAllLeaves({ year })
   const all = allData?.results || allData || []
 
-  // ── Summary stats ──────────────────────────
   const stats = useMemo(() => ({
     total:    all.length,
     approved: all.filter(l => l.status === 'APPROVED').length,
@@ -45,7 +44,6 @@ export default function AdminReports() {
       .reduce((s, l) => s + parseFloat(l.leave_allowance_ksh || 0), 0),
   }), [all])
 
-  // ── By leave type ──────────────────────────
   const byType = useMemo(() => {
     const map = {}
     all.forEach(l => {
@@ -57,7 +55,6 @@ export default function AdminReports() {
     return Object.values(map).sort((a, b) => b.count - a.count)
   }, [all])
 
-  // ── By department ──────────────────────────
   const byDept = useMemo(() => {
     const map = {}
     all.forEach(l => {
@@ -68,7 +65,6 @@ export default function AdminReports() {
     return Object.values(map).sort((a, b) => b.count - a.count)
   }, [all])
 
-  // ── By status (pie) ────────────────────────
   const byStatus = useMemo(() => [
     { name: 'Approved', value: stats.approved,  color: STATUS_COLORS.APPROVED },
     { name: 'Rejected', value: stats.rejected,  color: STATUS_COLORS.REJECTED },
@@ -77,7 +73,6 @@ export default function AdminReports() {
       color: STATUS_COLORS.DRAFT },
   ].filter(s => s.value > 0), [stats, all])
 
-  // ── By month ───────────────────────────────
   const byMonth = useMemo(() => {
     const months = Array.from({ length: 12 }, (_, i) => ({
       month: new Date(0, i).toLocaleString('en', { month: 'short' }),
@@ -92,7 +87,6 @@ export default function AdminReports() {
     return months
   }, [all])
 
-  // ── CSV export ─────────────────────────────
   const exportCSV = () => {
     const headers = [
       'ID', 'Employee', 'Department', 'Leave Type',
@@ -120,7 +114,7 @@ export default function AdminReports() {
     const url  = URL.createObjectURL(blob)
     const a    = document.createElement('a')
     a.href     = url
-    a.download = `KFS_Leave_Report_${year}.csv`
+    a.download = `Leave_Report_${year}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -129,7 +123,7 @@ export default function AdminReports() {
     <div className="page-container">
       <div className="flex items-center justify-between mt-2 mb-5">
         <div>
-          <h1 className="text-kfs-dark">Reports</h1>
+          <h1 className="text-brand-dark">Reports</h1>
           <p className="text-gray-500 text-sm">
             Leave utilization and trends
           </p>
@@ -165,45 +159,14 @@ export default function AdminReports() {
         </div>
       ) : (
         <>
-          {/* Summary cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
             {[
-              {
-                label: 'Total Applications',
-                value: stats.total,
-                icon: FileText,
-                color: 'text-gray-600'
-              },
-              {
-                label: 'Approved',
-                value: stats.approved,
-                icon: CheckCircle,
-                color: 'text-green-600'
-              },
-              {
-                label: 'Rejected',
-                value: stats.rejected,
-                icon: XCircle,
-                color: 'text-red-500'
-              },
-              {
-                label: 'Pending',
-                value: stats.pending,
-                icon: TrendingUp,
-                color: 'text-yellow-600'
-              },
-              {
-                label: 'Total Days Approved',
-                value: stats.totalDays,
-                icon: Users,
-                color: 'text-blue-600'
-              },
-              {
-                label: 'Total Allowance (KSh)',
-                value: stats.totalAllowance.toLocaleString(),
-                icon: TrendingUp,
-                color: 'text-kfs-green'
-              },
+              { label: 'Total Applications', value: stats.total, icon: FileText, color: 'text-gray-600' },
+              { label: 'Approved', value: stats.approved, icon: CheckCircle, color: 'text-green-600' },
+              { label: 'Rejected', value: stats.rejected, icon: XCircle, color: 'text-red-500' },
+              { label: 'Pending', value: stats.pending, icon: TrendingUp, color: 'text-yellow-600' },
+              { label: 'Total Days Approved', value: stats.totalDays, icon: Users, color: 'text-blue-600' },
+              { label: 'Total Allowance (KSh)', value: stats.totalAllowance.toLocaleString(), icon: TrendingUp, color: 'text-brand' },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="card">
                 <div className="flex items-center gap-2 mb-1">
@@ -215,7 +178,6 @@ export default function AdminReports() {
             ))}
           </div>
 
-          {/* Monthly trend chart */}
           <div className="card mb-5">
             <h3 className="section-title">
               Monthly Approved Leave — {year}
@@ -226,48 +188,20 @@ export default function AdminReports() {
                   data={byMonth}
                   margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
                 >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="#f0f0f0"
-                  />
-                  <XAxis
-                    dataKey="month"
-                    tick={{ fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip
-                    contentStyle={{
-                      fontSize: 12,
-                      borderRadius: 8,
-                      border: '1px solid #e5e7eb'
-                    }}
+                    contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                   />
-                  <Bar
-                    dataKey="count"
-                    name="Applications"
-                    fill="#2d6a4f"
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <Bar
-                    dataKey="days"
-                    name="Days"
-                    fill="#52b788"
-                    radius={[4, 4, 0, 0]}
-                  />
+                  <Bar dataKey="count" name="Applications" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="days" name="Days" fill="#818cf8" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Status pie + by type bar */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-            {/* Pie */}
             <div className="card">
               <h3 className="section-title">Status Breakdown</h3>
               <div className="h-48">
@@ -286,23 +220,13 @@ export default function AdminReports() {
                         <Cell key={i} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        fontSize: 12,
-                        borderRadius: 8
-                      }}
-                    />
-                    <Legend
-                      iconType="circle"
-                      iconSize={8}
-                      wrapperStyle={{ fontSize: 11 }}
-                    />
+                    <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                    <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* By type */}
             <div className="card">
               <h3 className="section-title">By Leave Type</h3>
               <div className="h-48">
@@ -312,41 +236,13 @@ export default function AdminReports() {
                     layout="vertical"
                     margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
                   >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="#f0f0f0"
-                      horizontal={false}
-                    />
-                    <XAxis
-                      type="number"
-                      tick={{ fontSize: 10 }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      dataKey="name"
-                      type="category"
-                      tick={{ fontSize: 10 }}
-                      width={80}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        fontSize: 12,
-                        borderRadius: 8
-                      }}
-                    />
-                    <Bar
-                      dataKey="count"
-                      name="Applications"
-                      radius={[0, 4, 4, 0]}
-                    >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+                    <XAxis type="number" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={80} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                    <Bar dataKey="count" name="Applications" radius={[0, 4, 4, 0]}>
                       {byType.map((_, i) => (
-                        <Cell
-                          key={i}
-                          fill={COLORS[i % COLORS.length]}
-                        />
+                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -355,7 +251,6 @@ export default function AdminReports() {
             </div>
           </div>
 
-          {/* By department */}
           {byDept.length > 0 && (
             <div className="card mb-5">
               <h3 className="section-title">Leave by Department</h3>
@@ -365,40 +260,22 @@ export default function AdminReports() {
                     data={byDept}
                     margin={{ top: 5, right: 10, left: -20, bottom: 20 }}
                   >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="#f0f0f0"
-                    />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis
                       dataKey="name"
                       tick={{ fontSize: 10, angle: -20, textAnchor: 'end' }}
                       axisLine={false}
                       tickLine={false}
                     />
-                    <YAxis
-                      tick={{ fontSize: 10 }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        fontSize: 12,
-                        borderRadius: 8
-                      }}
-                    />
-                    <Bar
-                      dataKey="count"
-                      name="Applications"
-                      fill="#40916c"
-                      radius={[4, 4, 0, 0]}
-                    />
+                    <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                    <Bar dataKey="count" name="Applications" fill="#6366f1" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
           )}
 
-          {/* Raw data table */}
           <div className="card mb-8">
             <div className="flex items-center justify-between mb-3">
               <h3 className="section-title mb-0">
@@ -413,16 +290,8 @@ export default function AdminReports() {
               <table className="w-full text-xs min-w-[600px]">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    {[
-                      'ID','Employee','Type',
-                      'From','To','Days',
-                      'Status','Allowance'
-                    ].map(h => (
-                      <th
-                        key={h}
-                        className="text-left text-gray-500 font-medium
-                                   py-2 pr-3"
-                      >
+                    {['ID','Employee','Type','From','To','Days','Status','Allowance'].map(h => (
+                      <th key={h} className="text-left text-gray-500 font-medium py-2 pr-3">
                         {h}
                       </th>
                     ))}
@@ -430,11 +299,7 @@ export default function AdminReports() {
                 </thead>
                 <tbody>
                   {all.map(l => (
-                    <tr
-                      key={l.id}
-                      className="border-b border-gray-50
-                                 hover:bg-gray-50 transition-colors"
-                    >
+                    <tr key={l.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                       <td className="py-2 pr-3 text-gray-500">
                         LV-{String(l.id).padStart(5,'0')}
                       </td>
@@ -450,7 +315,7 @@ export default function AdminReports() {
                       <td className="py-2 pr-3 text-gray-600">
                         {l.to_date}
                       </td>
-                      <td className="py-2 pr-3 text-kfs-green font-medium">
+                      <td className="py-2 pr-3 text-brand font-medium">
                         {l.days_requested}
                       </td>
                       <td className="py-2 pr-3">
