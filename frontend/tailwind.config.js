@@ -7,16 +7,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        kfs: {
-          green:  '#2d6a4f',
-          light:  '#52b788',
-          dark:   '#1b4332',
-          accent: '#d8f3dc',
-          muted:  '#f0f4f0',
+        brand: {
+          DEFAULT: '#4f46e5',
+          light:   '#818cf8',
+          dark:    '#3730a3',
+          accent:  '#e0e7ff',
+          muted:   '#f4f5fb',
+          glow:    '#a5b4fc',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Manrope', 'system-ui', 'sans-serif'],
+        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
+      boxShadow: {
+        glass: '0 8px 32px 0 rgba(79, 70, 229, 0.15)',
+        'glass-sm': '0 4px 16px 0 rgba(79, 70, 229, 0.10)',
+      },
+      borderRadius: {
+        '2xl': '1.25rem',
+        '3xl': '1.75rem',
       },
     },
   },
