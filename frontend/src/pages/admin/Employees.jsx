@@ -20,8 +20,8 @@ function CreateModal({ onClose }) {
   const onSubmit = async (data) => { await create.mutateAsync(data); onClose() }
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:pb-0">
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white/90 backdrop-blur-md px-5 pt-5 pb-3 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-white border border-gray-200 rounded-3xl w-full max-w-md shadow-glass max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-gray-100 px-5 pt-5 pb-3 flex items-center justify-between">
           <h3 className="font-semibold text-gray-800">Create Employee</h3>
           <button onClick={onClose}><X size={18} className="text-gray-400" /></button>
         </div>

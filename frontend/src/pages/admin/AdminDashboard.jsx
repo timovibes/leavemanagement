@@ -27,8 +27,8 @@ function Tab({ active, onClick, icon: Icon, label }) {
       className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm
                   font-medium transition-all whitespace-nowrap ${
         active
-          ? 'bg-brand text-white shadow-glass-sm'
-          : 'glass text-gray-600 hover:bg-white/80'
+          ? 'bg-brand text-white'
+          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
       }`}
     >
       <Icon size={15} />
@@ -208,7 +208,7 @@ function DepartmentsTab() {
 
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 w-full max-w-sm shadow-xl">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-glass">
             <h3 className="font-semibold text-gray-800 mb-2">Delete Department?</h3>
             <p className="text-gray-500 text-sm mb-5">
               This cannot be undone. Employees will lose their department assignment.
@@ -417,7 +417,7 @@ function LeaveTypesTab() {
 
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 w-full max-w-sm shadow-xl">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-glass">
             <h3 className="font-semibold text-gray-800 mb-2">Delete Leave Type?</h3>
             <p className="text-gray-500 text-sm mb-5">This will affect all leave balances linked to this type.</p>
             <div className="flex gap-3">
@@ -547,7 +547,7 @@ function HolidaysTab() {
 
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 w-full max-w-sm shadow-xl">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-glass">
             <h3 className="font-semibold text-gray-800 mb-2">Delete Holiday?</h3>
             <div className="flex gap-3 mt-4">
               <button onClick={() => setConfirmDelete(null)} className="btn-secondary">Cancel</button>
@@ -642,8 +642,8 @@ export default function AdminDashboard() {
       </div>
 
       {/* Total allowance */}
-      <div className="card mb-6 bg-brand-dark/85 backdrop-blur-lg border-white/10">
-        <p className="text-indigo-200 text-xs mb-1">Total Leave Allowance Paid — {currentYear}</p>
+      <div className="card mb-6 bg-black border-gray-800">
+        <p className="text-gray-400 text-xs mb-1">Total Leave Allowance Paid — {currentYear}</p>
         <p className="text-white text-3xl font-bold">
           KSh {stats.totalAllowance.toLocaleString()}
         </p>
