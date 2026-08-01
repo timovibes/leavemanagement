@@ -85,12 +85,12 @@ export default function ApplyLeave() {
   return (
     <div className="page-container">
       <div className="mb-5 mt-2">
-        <h1 className="text-kfs-dark">Apply for Leave</h1>
-        <p className="text-gray-500 text-sm">Fill in Part I of the KFS Leave Form</p>
+        <h1 className="text-brand-dark">Apply for Leave</h1>
+        <p className="text-gray-500 text-sm">Fill in Part I of the Leave Form</p>
       </div>
 
       {/* Employee info banner */}
-      <div className="card mb-5 bg-kfs-muted border-kfs-green/20">
+      <div className="card mb-5 bg-brand-muted border-brand/20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           {[
             { label: 'Name',          value: user?.name },
@@ -131,7 +131,7 @@ export default function ApplyLeave() {
               {/* Balance info */}
               {selectedBalance && (
                 <div className="mt-2 flex items-center gap-2 text-xs
-                                text-kfs-green bg-kfs-accent px-3 py-1.5 rounded-lg">
+                                text-brand bg-brand-accent px-3 py-1.5 rounded-lg">
                   <Info size={13} />
                   Balance: <strong>{selectedBalance.remaining} days</strong> remaining
                   (Taken: {selectedBalance.taken} / {selectedBalance.total_entitlement})
@@ -282,7 +282,7 @@ export default function ApplyLeave() {
               <div className="flex items-center justify-between bg-white
                               border border-amber-300 rounded-lg px-3 py-2">
                 <div className="flex items-center gap-2 text-sm text-gray-700 min-w-0">
-                  <Upload size={14} className="text-kfs-green shrink-0" />
+                  <Upload size={14} className="text-brand shrink-0" />
                   <span className="truncate">{selectedFile.name}</span>
                   <span className="text-gray-400 shrink-0">
                     ({(selectedFile.size / 1024).toFixed(0)} KB)
