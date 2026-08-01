@@ -29,7 +29,7 @@ export default function AdminHRQueue() {
   return (
     <div className="page-container">
       <div className="mt-2 mb-5">
-        <h1 className="text-kfs-dark">Leave Queue</h1>
+        <h1 className="text-brand-dark">Leave Queue</h1>
         <p className="text-gray-500 text-sm">System-wide overview of all leave requests</p>
       </div>
       <div className="flex flex-wrap gap-2 mb-4">

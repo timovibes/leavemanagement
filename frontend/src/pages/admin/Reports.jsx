@@ -15,12 +15,12 @@ const currentYear = new Date().getFullYear()
 const years = [currentYear, currentYear - 1, currentYear - 2]
 
 const COLORS = [
-  '#4f46e5', '#818cf8', '#3730a3',
-  '#a5b4fc', '#6366f1', '#c7d2fe'
+  '#1f7a8c', '#bfdbf7', '#022b3a',
+  '#5fa8b8', '#8fc4d4', '#3d94a6'
 ]
 
 const STATUS_COLORS = {
-  APPROVED:  '#4f46e5',
+  APPROVED:  '#1f7a8c',
   REJECTED:  '#ef4444',
   PENDING:   '#f59e0b',
   DRAFT:     '#9ca3af',
@@ -194,8 +194,8 @@ export default function AdminReports() {
                   <Tooltip
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                   />
-                  <Bar dataKey="count" name="Applications" fill="#4f46e5" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="days" name="Days" fill="#818cf8" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="count" name="Applications" fill="#1f7a8c" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="days" name="Days" fill="#bfdbf7" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -269,7 +269,7 @@ export default function AdminReports() {
                     />
                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                     <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
-                    <Bar dataKey="count" name="Applications" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="count" name="Applications" fill="#1f7a8c" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
