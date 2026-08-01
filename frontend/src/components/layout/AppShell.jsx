@@ -58,8 +58,8 @@ export default function AppShell() {
 
   const Sidebar = () => (
     <div className="flex flex-col h-full">
-      <div className="px-4 py-5 border-b border-white/10">
-        <p className="text-white font-display font-semibold text-sm leading-tight">
+      <div className="px-4 py-5 border-b border-gray-800">
+        <p className="text-white font-display font-semibold text-sm leading-tight tracking-wide">
           Leave Management System
         </p>
       </div>
@@ -74,8 +74,8 @@ export default function AppShell() {
               `flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm
                transition-all duration-150 ${
                 isActive
-                  ? 'bg-white/20 backdrop-blur-sm text-white font-medium shadow-glass-sm'
-                  : 'text-brand-light/90 hover:bg-white/10'
+                  ? 'bg-white text-black font-medium'
+                  : 'text-gray-300 hover:bg-gray-800'
               }`
             }
           >
@@ -85,19 +85,19 @@ export default function AppShell() {
         ))}
       </nav>
 
-      <div className="border-t border-white/10 p-4">
+      <div className="border-t border-gray-800 p-4">
         <div className="mb-3">
           <div className="flex items-center justify-between">
             <div className="min-w-0">
               <p className="text-white text-sm font-medium truncate">{user?.name}</p>
-              <p className="text-brand-light/80 text-xs truncate">{user?.email}</p>
-              <span className="mt-1 inline-block bg-white/10 backdrop-blur-sm text-brand-light/90
-                               text-xs px-2 py-0.5 rounded-full">
+              <p className="text-gray-400 text-xs truncate">{user?.email}</p>
+              <span className="mt-1 inline-block bg-gray-800 text-gray-300
+                               text-xs px-2 py-0.5 rounded-full uppercase tracking-wider">
                 {user?.role?.replace('_', ' ')}
               </span>
             </div>
             <NavLink to="/notifications" className="relative shrink-0 ml-2">
-              <Bell size={20} className="text-brand-light/80 hover:text-white transition-colors" />
+              <Bell size={20} className="text-gray-400 hover:text-white transition-colors" />
               {unread > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white
                                  text-xs w-4 h-4 rounded-full flex items-center
@@ -110,7 +110,7 @@ export default function AppShell() {
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 text-brand-light/80 hover:text-white
+          className="flex items-center gap-2 text-gray-400 hover:text-white
                      text-sm transition-colors w-full"
         >
           <LogOut size={16} />
@@ -122,8 +122,8 @@ export default function AppShell() {
 
   return (
     <div className="min-h-screen flex">
-      <aside className="hidden md:flex flex-col w-60 bg-brand-dark/85 backdrop-blur-lg
-                        border-r border-white/10 fixed inset-y-0 left-0 z-30">
+      <aside className="hidden md:flex flex-col w-60 bg-black
+                        fixed inset-y-0 left-0 z-30">
         <Sidebar />
       </aside>
 
@@ -133,7 +133,7 @@ export default function AppShell() {
             className="fixed inset-0 bg-black/50"
             onClick={() => setSidebarOpen(false)}
           />
-          <aside className="relative flex flex-col w-72 bg-brand-dark/95 backdrop-blur-lg z-50">
+          <aside className="relative flex flex-col w-72 bg-black z-50">
             <button
               onClick={() => setSidebarOpen(false)}
               className="absolute top-4 right-4 text-white"
@@ -146,13 +146,13 @@ export default function AppShell() {
       )}
 
       <div className="flex-1 flex flex-col md:ml-60">
-        <header className="md:hidden bg-brand-dark/85 backdrop-blur-lg text-white px-4 py-3
+        <header className="md:hidden bg-black text-white px-4 py-3
                            flex items-center justify-between sticky top-0 z-20
-                           border-b border-white/10">
+                           border-b border-gray-800">
           <button onClick={() => setSidebarOpen(true)}>
             <Menu size={22} />
           </button>
-          <span className="font-display font-semibold text-sm">Leave Management System</span>
+          <span className="font-display font-semibold text-sm tracking-wide">Leave Management System</span>
           <NavLink to="/notifications" className="relative">
             <Bell size={20} />
             {unread > 0 && (
