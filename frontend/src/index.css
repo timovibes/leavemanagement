@@ -9,7 +9,7 @@
   }
   body {
     @apply text-gray-900 font-sans text-sm min-h-screen;
-    background: linear-gradient(135deg, #faf6ef 0%, #f5efe3 50%, #f0e6d6 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #e1e5f2 50%, #bfdbf7 100%);
     background-attachment: fixed;
   }
   h1 { @apply text-2xl font-bold font-display text-brand-dark; }

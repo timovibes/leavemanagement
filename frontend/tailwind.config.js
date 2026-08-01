@@ -8,12 +8,11 @@ export default {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#c2540c',
-          light:   '#e07a3a',
-          dark:    '#2b2620',
-          accent:  '#fde8d3',
-          muted:   '#faf6ef',
-          cream:   '#f5efe3',
+          DEFAULT: '#1f7a8c',
+          light:   '#bfdbf7',
+          dark:    '#022b3a',
+          accent:  '#e1e5f2',
+          muted:   '#ffffff',
         },
       },
       fontFamily: {
@@ -24,8 +23,8 @@ export default {
         xs: '2px',
       },
       boxShadow: {
-        glass: '0 8px 32px 0 rgba(43, 38, 32, 0.10)',
-        'glass-sm': '0 4px 16px 0 rgba(43, 38, 32, 0.08)',
+        glass: '0 8px 32px 0 rgba(2, 43, 58, 0.12)',
+        'glass-sm': '0 4px 16px 0 rgba(2, 43, 58, 0.08)',
       },
       borderRadius: {
         '2xl': '1.25rem',
