@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,54 +8,55 @@
     box-sizing: border-box;
   }
   body {
-    @apply text-gray-900 font-sans text-sm min-h-screen;
-    background: linear-gradient(135deg, #ffffff 0%, #e1e5f2 50%, #bfdbf7 100%);
-    background-attachment: fixed;
+    @apply bg-white text-gray-900 font-sans text-sm min-h-screen;
+    letter-spacing: 0.01em;
   }
-  h1 { @apply text-2xl font-bold font-display text-brand-dark; }
-  h2 { @apply text-xl font-semibold font-display text-brand-dark; }
-  h3 { @apply text-lg font-semibold font-display; }
+  h1 { @apply text-2xl font-bold font-display text-black tracking-wide; }
+  h2 { @apply text-xl font-semibold font-display text-black tracking-wide; }
+  h3 { @apply text-lg font-semibold font-display tracking-wide; }
 }
 
 @layer components {
   .glass {
-    @apply bg-white/60 backdrop-blur-md border border-white/60 shadow-glass;
+    @apply bg-white border border-gray-200 shadow-glass;
   }
 
   .btn-primary {
-    @apply bg-brand text-white px-4 py-2.5 rounded-2xl font-medium
-           hover:bg-brand-dark active:scale-95 transition-all duration-150
+    @apply bg-black text-white px-4 py-2.5 rounded-2xl font-medium
+           hover:bg-gray-800 active:scale-95 transition-all duration-150
            disabled:opacity-50 disabled:cursor-not-allowed w-full
-           shadow-glass-sm;
+           tracking-wide;
   }
   .btn-secondary {
-    @apply glass text-brand-dark px-4 py-2.5 rounded-2xl font-medium
-           hover:bg-white/80 active:scale-95 transition-all duration-150 w-full;
+    @apply bg-white text-black border border-black px-4 py-2.5
+           rounded-2xl font-medium hover:bg-gray-100 active:scale-95
+           transition-all duration-150 w-full tracking-wide;
   }
   .btn-danger {
-    @apply bg-red-500/90 backdrop-blur-sm text-white px-4 py-2.5 rounded-2xl font-medium
-           hover:bg-red-600 active:scale-95 transition-all duration-150 w-full;
+    @apply bg-red-600 text-white px-4 py-2.5 rounded-2xl font-medium
+           hover:bg-red-700 active:scale-95 transition-all duration-150 w-full
+           tracking-wide;
   }
   .input-field {
-    @apply w-full border border-white/70 bg-white/50 backdrop-blur-sm rounded-2xl px-3 py-2.5 text-sm
-           focus:outline-none focus:ring-2 focus:ring-brand-light focus:border-transparent
-           placeholder-gray-400 transition;
+    @apply w-full border border-gray-300 rounded-2xl px-3 py-2.5 text-sm
+           focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
+           bg-white placeholder-gray-400 transition;
   }
   .card {
     @apply glass rounded-3xl p-4;
   }
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium backdrop-blur-sm;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium tracking-wider uppercase;
   }
-  .badge-approved  { @apply badge bg-green-100/80 text-green-800; }
-  .badge-rejected  { @apply badge bg-red-100/80 text-red-800; }
-  .badge-pending   { @apply badge bg-yellow-100/80 text-yellow-800; }
-  .badge-draft     { @apply badge bg-gray-100/80 text-gray-700; }
-  .badge-review    { @apply badge bg-blue-100/80 text-blue-800; }
+  .badge-approved  { @apply badge bg-green-100 text-green-800; }
+  .badge-rejected  { @apply badge bg-red-100 text-red-800; }
+  .badge-pending   { @apply badge bg-yellow-100 text-yellow-800; }
+  .badge-draft     { @apply badge bg-gray-100 text-gray-700; }
+  .badge-review    { @apply badge bg-blue-100 text-blue-800; }
   .page-container {
     @apply max-w-2xl mx-auto px-4 py-6 md:max-w-4xl lg:max-w-6xl;
   }
   .section-title {
-    @apply text-base font-semibold font-display text-brand-dark mb-3;
+    @apply text-base font-semibold font-display text-black mb-3 tracking-wide;
   }
 }
