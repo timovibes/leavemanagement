@@ -134,7 +134,7 @@ export default function TeamCalendar() {
     <div className="page-container">
       {/* Header */}
       <div className="mt-2 mb-5">
-        <h1 className="text-kfs-dark">Team Calendar</h1>
+        <h1 className="text-brand-dark">Team Calendar</h1>
         <p className="text-gray-500 text-sm">See who is on leave and when they return</p>
       </div>
 
@@ -150,14 +150,14 @@ export default function TeamCalendar() {
           </button>
 
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-kfs-dark">
+            <h2 className="text-base font-semibold text-brand-dark">
               {MONTHS[viewMonth]} {viewYear}
             </h2>
             {!isViewingCurrentMonth && (
               <button
                 onClick={goToToday}
-                className="text-xs text-kfs-green font-medium px-2 py-0.5
-                           border border-kfs-green rounded-full hover:bg-kfs-green
+                className="text-xs text-brand font-medium px-2 py-0.5
+                           border border-brand rounded-full hover:bg-brand
                            hover:text-white transition-colors"
               >
                 Today
@@ -203,8 +203,8 @@ export default function TeamCalendar() {
                 onClick={() => setSelectedDay(isSelected ? null : day)}
                 className={`relative flex flex-col items-center rounded-lg py-1.5
                             min-h-[44px] transition-colors text-sm
-                            ${isToday ? 'bg-kfs-green text-white font-bold' : ''}
-                            ${isSelected && !isToday ? 'bg-kfs-accent' : ''}
+                            ${isToday ? 'bg-brand text-white font-bold' : ''}
+                            ${isSelected && !isToday ? 'bg-brand-accent' : ''}
                             ${isWeekend && !isToday ? 'text-gray-400' : ''}
                             ${!isToday && !isSelected ? 'hover:bg-gray-50' : ''}
                           `}
@@ -306,7 +306,7 @@ export default function TeamCalendar() {
                       {' · '}
                       {leave.days_requested}d
                     </p>
-                    <p className="text-xs text-kfs-green font-medium mt-0.5 flex items-center gap-1">
+                    <p className="text-xs text-brand font-medium mt-0.5 flex items-center gap-1">
                       <CalendarCheck size={11} />
                       Returns {getReturnDate(leave.to_date)}
                     </p>
@@ -349,7 +349,7 @@ export default function TeamCalendar() {
                       <p className="text-xs text-gray-400">
                         {formatDate(earliest.from_date)} → {formatDate(earliest.to_date)}
                         {' · '}
-                        <span className="text-kfs-green font-medium">
+                        <span className="text-brand font-medium">
                           Returns {getReturnDate(earliest.to_date)}
                         </span>
                       </p>
@@ -401,7 +401,7 @@ export default function TeamCalendar() {
                     {' · '}
                     {leave.days_requested}d
                   </p>
-                  <p className="text-xs text-kfs-green font-medium mt-0.5 flex items-center gap-1">
+                  <p className="text-xs text-brand font-medium mt-0.5 flex items-center gap-1">
                     <CalendarCheck size={11} />
                     Returns {getReturnDate(leave.to_date)}
                   </p>

@@ -21,7 +21,7 @@ export default function SupervisorDashboard() {
   return (
     <div className="page-container">
       <div className="mt-2 mb-5">
-        <h1 className="text-kfs-dark">
+        <h1 className="text-brand-dark">
           Hello, {user?.name?.split(' ')[0]} 👋
         </h1>
         <p className="text-gray-500 text-sm">
@@ -52,8 +52,8 @@ export default function SupervisorDashboard() {
             label: 'Total Team Leaves',
             value: teamLeaves.length,
             icon: CheckSquare,
-            color: 'text-kfs-green',
-            bg: 'bg-kfs-accent',
+            color: 'text-brand',
+            bg: 'bg-brand-accent',
             to: '/supervisor/calendar'
           },
           {
@@ -81,7 +81,7 @@ export default function SupervisorDashboard() {
           <h3 className="section-title mb-0">Pending Approvals</h3>
           <Link
             to="/supervisor/pending"
-            className="text-xs text-kfs-green font-medium flex items-center gap-0.5"
+            className="text-xs text-brand font-medium flex items-center gap-0.5"
           >
             View all <ChevronRight size={14} />
           </Link>
@@ -116,7 +116,7 @@ export default function SupervisorDashboard() {
             {pending.length > 3 && (
               <Link
                 to="/supervisor/pending"
-                className="block text-center text-xs text-kfs-green font-medium py-2"
+                className="block text-center text-xs text-brand font-medium py-2"
               >
                 +{pending.length - 3} more pending
               </Link>
@@ -132,7 +132,7 @@ export default function SupervisorDashboard() {
           <div className="space-y-2">
             {onLeaveToday.map(leave => (
               <div key={leave.id} className="card flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-kfs-green flex items-center
+                <div className="w-8 h-8 rounded-full bg-brand flex items-center
                                 justify-center text-white text-sm font-bold shrink-0">
                   {leave.employee_name?.charAt(0)}
                 </div>

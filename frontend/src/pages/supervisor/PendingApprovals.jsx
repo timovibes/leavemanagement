@@ -34,7 +34,7 @@ function ReviewModal({ leave, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center
                     justify-center z-50 px-4 pb-4 sm:pb-0">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl
+      <div className="bg-white border border-gray-200 rounded-3xl w-full max-w-md shadow-glass
                       max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white px-5 pt-5 pb-3 border-b border-gray-100">
@@ -51,9 +51,9 @@ function ReviewModal({ leave, onClose }) {
 
         <div className="px-5 py-4 space-y-4">
           {/* Leave summary */}
-          <div className="bg-kfs-muted rounded-xl p-4 space-y-2">
+          <div className="bg-brand-muted rounded-xl p-4 space-y-2">
             <div className="flex items-center justify-between">
-              <p className="font-semibold text-kfs-dark">{leave.employee_name}</p>
+              <p className="font-semibold text-brand-dark">{leave.employee_name}</p>
               <StatusBadge status={leave.status} />
             </div>
             <p className="text-sm text-gray-600">{leave.leave_type_name}</p>
@@ -249,7 +249,7 @@ function LeaveCard({ leave, onReview }) {
           </div>
           <p className="text-sm text-gray-600 mt-0.5">
             {leave.leave_type_name} •{' '}
-            <span className="font-medium text-kfs-green">
+            <span className="font-medium text-brand">
               {leave.days_requested} days
             </span>
           </p>
@@ -303,7 +303,7 @@ export default function PendingApprovals() {
   return (
     <div className="page-container">
       <div className="mt-2 mb-5">
-        <h1 className="text-kfs-dark">Pending Approvals</h1>
+        <h1 className="text-brand-dark">Pending Approvals</h1>
         <p className="text-gray-500 text-sm">
           {pending.length} request{pending.length !== 1 ? 's' : ''} awaiting your review
         </p>
