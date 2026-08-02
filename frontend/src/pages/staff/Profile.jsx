@@ -35,21 +35,21 @@ export default function Profile() {
   return (
     <div className="page-container">
       <div className="mt-2 mb-5">
-        <h1 className="text-kfs-dark">My Profile</h1>
+        <h1 className="text-brand-dark">My Profile</h1>
         <p className="text-gray-500 text-sm">View and update your information</p>
       </div>
 
       {/* Info card */}
       <div className="card mb-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-kfs-green flex items-center
+          <div className="w-14 h-14 rounded-full bg-brand flex items-center
                           justify-center text-white text-xl font-bold shrink-0">
             {user?.name?.charAt(0).toUpperCase()}
           </div>
           <div>
             <p className="font-semibold text-gray-800">{user?.name}</p>
             <p className="text-sm text-gray-500">{user?.email}</p>
-            <span className="text-xs bg-kfs-accent text-kfs-green
+            <span className="text-xs bg-brand-accent text-brand
                              px-2 py-0.5 rounded-full font-medium">
               {user?.role?.replace('_', ' ')}
             </span>
@@ -74,7 +74,7 @@ export default function Profile() {
       {/* Edit profile */}
       <div className="card mb-5">
         <div className="flex items-center gap-2 mb-4">
-          <User size={16} className="text-kfs-green" />
+          <User size={16} className="text-brand" />
           <h3 className="section-title mb-0">Edit Profile</h3>
         </div>
         <form onSubmit={handleProfile(onProfile)} className="space-y-4">
@@ -116,7 +116,7 @@ export default function Profile() {
       {/* Change password */}
       <div className="card mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <Lock size={16} className="text-kfs-green" />
+          <Lock size={16} className="text-brand" />
           <h3 className="section-title mb-0">Change Password</h3>
         </div>
         <form onSubmit={handlePwd(onPassword)} className="space-y-4">

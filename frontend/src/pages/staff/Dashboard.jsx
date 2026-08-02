@@ -12,12 +12,12 @@ import StatusBadge from '../../components/ui/StatusBadge'
 const currentYear = new Date().getFullYear()
 
 const balanceColors = [
-  'from-kfs-green to-kfs-light',
-  'from-blue-500 to-blue-400',
-  'from-purple-600 to-purple-400',
-  'from-orange-500 to-orange-400',
-  'from-pink-500 to-pink-400',
-  'from-teal-600 to-teal-400',
+  'from-black to-gray-700',
+  'from-gray-800 to-gray-600',
+  'from-gray-700 to-gray-500',
+  'from-gray-900 to-gray-700',
+  'from-gray-600 to-gray-400',
+  'from-gray-800 to-gray-500',
 ]
 
 export default function Dashboard() {
@@ -39,7 +39,7 @@ export default function Dashboard() {
     <div className="page-container">
       {/* Welcome */}
       <div className="mb-6 mt-2">
-        <h1 className="text-kfs-dark">
+        <h1 className="text-brand-dark">
           Hello, {user?.name?.split(' ')[0]} 👋
         </h1>
         <p className="text-gray-500 text-sm mt-0.5">
@@ -133,7 +133,7 @@ export default function Dashboard() {
           <h3 className="section-title mb-0">Recent Applications</h3>
           <Link
             to="/my-leaves"
-            className="text-xs text-kfs-green font-medium flex items-center gap-0.5"
+            className="text-xs text-brand font-medium flex items-center gap-0.5"
           >
             View all <ChevronRight size={14} />
           </Link>
@@ -159,7 +159,7 @@ export default function Dashboard() {
               <Link
                 key={leave.id}
                 to={`/my-leaves/${leave.id}`}
-                className="card flex items-center justify-between hover:border-kfs-green
+                className="card flex items-center justify-between hover:border-brand
                            transition-colors cursor-pointer"
               >
                 <div className="flex-1 min-w-0">
@@ -184,9 +184,9 @@ export default function Dashboard() {
       {/* FAB — Apply Leave */}
       <Link
         to="/apply-leave"
-        className="fixed bottom-6 right-6 bg-kfs-green text-white
-                   rounded-full shadow-lg p-4 flex items-center gap-2
-                   hover:bg-kfs-dark transition-colors z-10
+        className="fixed bottom-6 right-6 bg-black text-white
+                   rounded-full shadow-glass p-4 flex items-center gap-2
+                   hover:bg-gray-800 transition-colors z-10
                    md:hidden"
       >
         <Plus size={22} />

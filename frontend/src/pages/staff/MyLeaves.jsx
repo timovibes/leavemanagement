@@ -33,15 +33,15 @@ export default function MyLeaves() {
     <div className="page-container">
       <div className="flex items-center justify-between mt-2 mb-5">
         <div>
-          <h1 className="text-kfs-dark">My Leave History</h1>
+          <h1 className="text-brand-dark">My Leave History</h1>
           <p className="text-gray-500 text-sm">
             {leaves.length} application{leaves.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-1.5 text-sm text-kfs-green
-                     border border-kfs-green rounded-lg px-3 py-2"
+          className="flex items-center gap-1.5 text-sm text-brand
+                     border border-brand rounded-lg px-3 py-2"
         >
           <Filter size={15} />
           Filter
@@ -132,7 +132,7 @@ export default function MyLeaves() {
                   </div>
                   <p className="text-sm text-gray-600 mt-1">
                     {leave.from_date} → {leave.to_date}
-                    <span className="ml-2 font-medium text-kfs-green">
+                    <span className="ml-2 font-medium text-brand">
                       {leave.days_requested} days
                     </span>
                   </p>
@@ -161,7 +161,7 @@ export default function MyLeaves() {
                       <button
                         onClick={() => handleSubmit(leave.id)}
                         disabled={submitLeave.isPending}
-                        className="p-2 text-kfs-green hover:bg-kfs-accent rounded-lg
+                        className="p-2 text-brand hover:bg-brand-accent rounded-lg
                                    transition-colors"
                         title="Submit"
                       >
@@ -178,8 +178,8 @@ export default function MyLeaves() {
                     </>
                   )}
                   {leave.status === 'APPROVED' && (
-                    <a
-                      href={`${import.meta.env.VITE_API_BASE_URL}/leaves/${leave.id}/download-pdf/`}
+                    
+                      <a href={`${import.meta.env.VITE_API_BASE_URL}/leaves/${leave.id}/download-pdf/`}
                       target="_blank"
                       rel="noreferrer"
                       className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg
@@ -206,7 +206,7 @@ export default function MyLeaves() {
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center
                         justify-center z-50 px-4 pb-6 sm:pb-0">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-glass">
             <h3 className="font-semibold text-gray-800 mb-2">Delete Draft?</h3>
             <p className="text-gray-500 text-sm mb-5">
               This action cannot be undone.

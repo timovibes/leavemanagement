@@ -8,12 +8,12 @@ export default function Notifications() {
   return (
     <div className="page-container">
       <div className="flex items-center justify-between mt-2 mb-5">
-        <h1 className="text-kfs-dark">Notifications</h1>
+        <h1 className="text-brand-dark">Notifications</h1>
         {notifications.some(n => !n.is_read) && (
           <button
             onClick={() => markAll.mutate()}
-            className="flex items-center gap-1.5 text-xs text-kfs-green
-                       border border-kfs-green rounded-lg px-3 py-1.5"
+            className="flex items-center gap-1.5 text-xs text-brand
+                       border border-brand rounded-lg px-3 py-1.5"
           >
             <CheckCheck size={14} /> Mark all read
           </button>
@@ -40,12 +40,12 @@ export default function Notifications() {
             <div
               key={n.id}
               className={`card transition-colors ${
-                !n.is_read ? 'border-kfs-green/30 bg-kfs-muted' : ''
+                !n.is_read ? 'border-brand/30 bg-brand-muted' : ''
               }`}
             >
               <div className="flex items-start gap-3">
                 <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${
-                  !n.is_read ? 'bg-kfs-green' : 'bg-gray-300'
+                  !n.is_read ? 'bg-brand' : 'bg-gray-300'
                 }`} />
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm ${!n.is_read ? 'font-medium text-gray-800' : 'text-gray-600'}`}>

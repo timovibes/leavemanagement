@@ -40,11 +40,11 @@ export default function LeaveDetail() {
     <div className="page-container">
       {/* Header */}
       <div className="flex items-center gap-3 mt-2 mb-5">
-        <button onClick={() => navigate(-1)} className="text-kfs-green">
+        <button onClick={() => navigate(-1)} className="text-brand">
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-kfs-dark text-lg">
+          <h1 className="text-brand-dark text-lg">
             {leave.leave_type_name}
           </h1>
           <p className="text-gray-500 text-xs">
@@ -54,8 +54,8 @@ export default function LeaveDetail() {
         <div className="ml-auto flex items-center gap-2">
           <StatusBadge status={leave.status} />
           {leave.status === 'APPROVED' && (
-            <a
-              href={`${import.meta.env.VITE_API_BASE_URL}/leaves/${leave.id}/download-pdf/`}
+            
+              <a href={`${import.meta.env.VITE_API_BASE_URL}/leaves/${leave.id}/download-pdf/`}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 text-xs text-blue-600
@@ -129,7 +129,7 @@ export default function LeaveDetail() {
       {leave.leave_allowance_ksh && (
         <div className="card mb-4 bg-green-50 border-green-200">
           <h3 className="section-title text-green-800">Part IV — Leave Allowance</h3>
-          <p className="text-2xl font-bold text-kfs-green">
+          <p className="text-2xl font-bold text-brand">
             KSh {Number(leave.leave_allowance_ksh).toLocaleString()}
           </p>
           <p className="text-xs text-green-700 mt-1">Payable leave allowance</p>
